@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameStateService } from '../../core/services/game-state.service';
@@ -11,8 +11,13 @@ import { FloorId, FloorStatus } from '../../core/models/enums';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+  showStartup = false;
   constructor(private router: Router, private game: GameStateService) {}
+
+  ngOnInit(): void {
+    this.showStartup = !this.game.snapshot.hasSeenStartupVideo;
+  }
 
   open(id: FloorId) {
     const status = this.game.snapshot.floors[id];
@@ -45,5 +50,12 @@ export class HomeComponent {
     const s = this.game.snapshot.floors[id];
     if (s === 'Locked') return 'assets/images/lock.png';
     return null;
+  }
+
+  onStartupEnded(): void {
+    const next = { ...this.game.snapshot, hasSeenStartupVideo: true };
+    (this.game as any).state$.next(next);
+    this.game.save();
+    this.showStartup = false;
   }
 }

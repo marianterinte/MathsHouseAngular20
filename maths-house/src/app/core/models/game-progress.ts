@@ -6,4 +6,5 @@ export interface GameProgress {
   hasReachedPart2: boolean;
   collectedIngredients: string[];
   collectedMagicNumbers: Record<string, number>;
+  hasSeenStartupVideo: boolean;
 }

@@ -7,14 +7,14 @@ const STORAGE_KEY = 'GameProgress';
 
 function defaultFloors(): Record<FloorId, FloorStatus> {
   return {
-  GroundFloor: 'Locked',
-  FirstFloorLeft: 'Available',
-  FirstFloorRight: 'Available',
-    SecondFloorLeft: 'Locked',
-    SecondFloorRight: 'Locked',
-    ThirdFloorLeft: 'Locked',
-    ThirdFloorRight: 'Locked',
-    TopFloor: 'Locked',
+  GroundFloor: 'Available',
+  FirstFloorLeft: 'Locked',
+  FirstFloorRight: 'Locked',
+  SecondFloorLeft: 'Locked',
+  SecondFloorRight: 'Locked',
+  ThirdFloorLeft: 'Locked',
+  ThirdFloorRight: 'Locked',
+  TopFloor: 'Locked',
   };
 }
 
@@ -36,6 +36,7 @@ export class GameStateService {
       hasReachedPart2: false,
       collectedIngredients: [],
       collectedMagicNumbers: {},
+  hasSeenStartupVideo: false,
     };
   }
 

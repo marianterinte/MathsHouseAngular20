@@ -1,38 +1,16 @@
 <div class="home-container">
   <div class="stage">
-    <img class="house" src="assets/images/math_house.png" alt="Math House" />
-    <!-- Hot zones -->
-    <button class="hotzone first-left" (click)="open('FirstFloorLeft')" [disabled]="isLocked('FirstFloorLeft')" [class.blink]="isFirstAction('FirstFloorLeft')">
-      <span class="badge">{{ badgeText('FirstFloorLeft') }}</span>
-      <img *ngIf="badgeIcon('FirstFloorLeft')" class="badge-icon" [src]="badgeIcon('FirstFloorLeft')!" alt="status" />
-    </button>
-    <button class="hotzone first-right" (click)="open('FirstFloorRight')" [disabled]="isLocked('FirstFloorRight')" [class.blink]="isFirstAction('FirstFloorRight')">
-      <span class="badge">{{ badgeText('FirstFloorRight') }}</span>
-      <img *ngIf="badgeIcon('FirstFloorRight')" class="badge-icon" [src]="badgeIcon('FirstFloorRight')!" alt="status" />
-    </button>
-    <button class="hotzone second-left" (click)="open('SecondFloorLeft')" [disabled]="isLocked('SecondFloorLeft')">
-      <span class="badge">{{ badgeText('SecondFloorLeft') }}</span>
-      <img *ngIf="badgeIcon('SecondFloorLeft')" class="badge-icon" [src]="badgeIcon('SecondFloorLeft')!" alt="status" />
-    </button>
-    <button class="hotzone second-right" (click)="open('SecondFloorRight')" [disabled]="isLocked('SecondFloorRight')">
-      <span class="badge">{{ badgeText('SecondFloorRight') }}</span>
-      <img *ngIf="badgeIcon('SecondFloorRight')" class="badge-icon" [src]="badgeIcon('SecondFloorRight')!" alt="status" />
-    </button>
-    <button class="hotzone third-left" (click)="open('ThirdFloorLeft')" [disabled]="isLocked('ThirdFloorLeft')">
-      <span class="badge">{{ badgeText('ThirdFloorLeft') }}</span>
-      <img *ngIf="badgeIcon('ThirdFloorLeft')" class="badge-icon" [src]="badgeIcon('ThirdFloorLeft')!" alt="status" />
-    </button>
-    <button class="hotzone third-right" (click)="open('ThirdFloorRight')" [disabled]="isLocked('ThirdFloorRight')">
-      <span class="badge">{{ badgeText('ThirdFloorRight') }}</span>
-      <img *ngIf="badgeIcon('ThirdFloorRight')" class="badge-icon" [src]="badgeIcon('ThirdFloorRight')!" alt="status" />
-    </button>
-    <button class="hotzone ground-door" (click)="open('GroundFloor')" [disabled]="isLocked('GroundFloor')">
-      <span class="badge">{{ badgeText('GroundFloor') }}</span>
-      <img *ngIf="badgeIcon('GroundFloor')" class="badge-icon" [src]="badgeIcon('GroundFloor')!" alt="status" />
-    </button>
-    <button class="hotzone top" (click)="open('TopFloor')" [disabled]="isLocked('TopFloor')">
-      <span class="badge">{{ badgeText('TopFloor') }}</span>
-      <img *ngIf="badgeIcon('TopFloor')" class="badge-icon" [src]="badgeIcon('TopFloor')!" alt="status" />
+  <img class="house" src="assets/images/math_house.png" alt="Math House" />
+
+    <!-- Startup overlay -->
+    <div class="startup-overlay" *ngIf="showStartup">
+  <video #startupVideo class="startup-video" src="assets/raw/ZStartingVideo.mp4" autoplay playsinline (ended)="onStartupEnded()"></video>
+  <audio #startupAudio src="assets/raw/evilwitch.wav" autoplay></audio>
+    </div>
+
+    <!-- Only ground floor button initially -->
+    <button class="hotzone ground-door blink" (click)="open('GroundFloor')" [disabled]="isLocked('GroundFloor')">
+      <img class="hand" src="assets/images/mappicon.png" alt="hand" />
     </button>
   </div>
 </div>

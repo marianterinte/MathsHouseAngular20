@@ -1,6 +1,6 @@
-.home-container { display:flex; align-items:center; justify-content:center; padding:12px; }
-.stage { position: relative; width: 100%; max-width: 900px; }
-.house { width: 100%; height: auto; display:block; user-select:none; pointer-events:none; }
+.home-container { display:flex; align-items:center; justify-content:center; padding:0; height: 100vh; width: 100vw; overflow:hidden; }
+.stage { position: relative; width: 100%; height: 100%; }
+.house { position:absolute; inset:0; width:100%; height:100%; object-fit: contain; display:block; user-select:none; pointer-events:none; background:#000; }
 .hotzone { position:absolute; background: rgba(0,0,0,0); border: 2px dashed transparent; border-radius: 8px; cursor: pointer; display:flex; align-items:center; justify-content:center; }
 .hotzone:focus-visible { outline: 2px solid #2563eb; }
 .hotzone:disabled { cursor: default; }
@@ -18,3 +18,7 @@
 .third-right { right: 24%; top: 14%; width: 11%; height: 10%; }
 .ground-door { left: 44%; bottom: 6%; width: 12%; height: 14%; }
 .top { left: 44%; top: 1%; width: 12%; height: 10%; }
+
+.startup-overlay { position:absolute; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index: 2; }
+.startup-video { width: 100%; height: 100%; object-fit: contain; }
+.hand { width: clamp(24px, 6vw, 40px); height:auto; }
