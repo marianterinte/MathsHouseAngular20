@@ -1,0 +1,7 @@
+.app-header { position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: #fff; border-bottom: 1px solid #e5e7eb; }
+.left { display: flex; align-items: center; gap: 8px; }
+.right { display: flex; align-items: center; gap: 8px; }
+.spacer { flex: 1 1 auto; }
+.home-btn { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #111827; font-weight: 500; padding: 6px 10px; border-radius: 8px; border: 1px solid #e5e7eb; background: #f9fafb; }
+.home-btn:hover { background: #f3f4f6; }
+.home-btn .icon { width: 18px; height: 18px; object-fit: contain; }

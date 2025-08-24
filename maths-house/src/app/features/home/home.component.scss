@@ -1,0 +1,20 @@
+.home-container { display:flex; align-items:center; justify-content:center; padding:12px; }
+.stage { position: relative; width: 100%; max-width: 900px; }
+.house { width: 100%; height: auto; display:block; user-select:none; pointer-events:none; }
+.hotzone { position:absolute; background: rgba(0,0,0,0); border: 2px dashed transparent; border-radius: 8px; cursor: pointer; display:flex; align-items:center; justify-content:center; }
+.hotzone:focus-visible { outline: 2px solid #2563eb; }
+.hotzone:disabled { cursor: default; }
+.blink { animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{ box-shadow: 0 0 0 0 rgba(59,130,246,0.7);} 50%{ box-shadow: 0 0 0 6px rgba(59,130,246,0.0);} }
+.badge { font-size: clamp(14px, 2.2vw, 20px); font-weight: 700; color: #111827; background: rgba(255,255,255,0.85); border-radius: 999px; padding: 2px 8px; border: 1px solid #e5e7eb; }
+.badge-icon { width: clamp(18px, 3vw, 26px); height: auto; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15)); }
+
+/* Approximate positions; adjust after visual QA */
+.first-left { left: 24%; top: 38%; width: 11%; height: 10%; }
+.first-right { right: 24%; top: 38%; width: 11%; height: 10%; }
+.second-left { left: 24%; top: 26%; width: 11%; height: 10%; }
+.second-right { right: 24%; top: 26%; width: 11%; height: 10%; }
+.third-left { left: 24%; top: 14%; width: 11%; height: 10%; }
+.third-right { right: 24%; top: 14%; width: 11%; height: 10%; }
+.ground-door { left: 44%; bottom: 6%; width: 12%; height: 14%; }
+.top { left: 44%; top: 1%; width: 12%; height: 10%; }

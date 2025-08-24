@@ -1,16 +1,49 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { GameStateService } from '../../core/services/game-state.service';
+import { FloorId, FloorStatus } from '../../core/models/enums';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  template: `
-    <div class="home-container">
-      <img class="house" src="assets/images/math_house.png" alt="Math House" />
-    </div>
-  `,
-  styles: [`
-    .home-container { display:flex; align-items:center; justify-content:center; padding:16px; }
-    .house { width: 100%; max-width: 900px; height: auto; user-select:none; }
-  `]
+  imports: [CommonModule],
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.scss'
 })
-export class HomeComponent {}
+export class HomeComponent {
+  constructor(private router: Router, private game: GameStateService) {}
+
+  open(id: FloorId) {
+    const status = this.game.snapshot.floors[id];
+    if (status === 'Available') {
+      this.router.navigate(['/level', id]);
+    } else if (status === 'Resolved' && id !== 'TopFloor') {
+      // Later: play animal video
+    } else if (id === 'TopFloor' && status === 'Resolved') {
+      // Later: play wizard video
+    }
+  }
+
+  isFirstAction(id: FloorId): boolean {
+    // Blink for the first available window only (initially FirstFloorLeft)
+    const floors = this.game.snapshot.floors;
+    const order: FloorId[] = ['FirstFloorLeft','FirstFloorRight','SecondFloorLeft','SecondFloorRight','ThirdFloorLeft','ThirdFloorRight','GroundFloor','TopFloor'];
+    const first = order.find(f => floors[f] === 'Available');
+    return first === id;
+  }
+
+  isLocked(id: FloorId): boolean { return this.game.snapshot.floors[id] === 'Locked'; }
+  isResolved(id: FloorId): boolean { return this.game.snapshot.floors[id] === 'Resolved'; }
+  badgeText(id: FloorId): string {
+    const s = this.game.snapshot.floors[id];
+    if (s === 'Available') return '?';
+    if (s === 'Resolved') return '✓';
+    return '';
+  }
+  badgeIcon(id: FloorId): string | null {
+    const s = this.game.snapshot.floors[id];
+    if (s === 'Locked') return 'assets/images/lock.png';
+    return null;
+  }
+}

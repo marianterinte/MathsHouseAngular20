@@ -7,9 +7,9 @@ const STORAGE_KEY = 'GameProgress';
 
 function defaultFloors(): Record<FloorId, FloorStatus> {
   return {
-    GroundFloor: 'Available',
-    FirstFloorLeft: 'Available',
-    FirstFloorRight: 'Locked',
+  GroundFloor: 'Locked',
+  FirstFloorLeft: 'Available',
+  FirstFloorRight: 'Available',
     SecondFloorLeft: 'Locked',
     SecondFloorRight: 'Locked',
     ThirdFloorLeft: 'Locked',

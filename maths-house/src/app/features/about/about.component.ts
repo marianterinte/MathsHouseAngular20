@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-about',
   standalone: true,
-  template: `<div>About placeholder</div>`
+  templateUrl: './about.component.html',
+  styleUrl: './about.component.scss'
 })
 export class AboutComponent {}
