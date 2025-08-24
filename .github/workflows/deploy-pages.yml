@@ -33,13 +33,30 @@ jobs:
       - name: Build Angular (Pages base-href)
         run: |
           npm run build -- --base-href "/MathsHouseAngular20/"
-          cp dist/maths-house/index.html dist/maths-house/404.html
+        working-directory: maths-house
+
+      - name: Determine output dir and add SPA 404
+        id: outdir
+        run: |
+          set -e
+          if [ -f dist/maths-house/index.html ]; then
+            OUT="dist/maths-house"
+          elif [ -f dist/maths-house/browser/index.html ]; then
+            OUT="dist/maths-house/browser"
+          else
+            echo "Index.html not found. Tree:" >&2
+            ls -R dist || true
+            exit 1
+          fi
+          echo "Using output: $OUT"
+          cp "$OUT/index.html" "$OUT/404.html"
+          echo "out=$OUT" >> "$GITHUB_OUTPUT"
         working-directory: maths-house
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: maths-house/dist/maths-house
+          path: maths-house/${{ steps.outdir.outputs.out }}
 
   deploy:
     environment:
