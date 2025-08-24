@@ -1,6 +1,12 @@
-.home-container { display:flex; align-items:center; justify-content:center; padding:0; height: 100vh; width: 100vw; overflow:hidden; }
-.stage { position: relative; width: 100%; height: 100%; }
-.house { position:absolute; inset:0; width:100%; height:100%; max-height: var(--house-max-height, 100%); object-fit: contain; display:block; user-select:none; pointer-events:none; background: transparent; }
+.home-container { display:flex; flex-direction: column; align-items: stretch; justify-content:flex-start; padding:0; min-height: 100vh; width: 100%; overflow-x:hidden; }
+.message-panel { margin: 8px 12px; background: #E0FFE0; border: 1px solid #006400; border-radius: 12px; padding: 10px 12px; display: grid; grid-template-columns: auto 1fr; gap: 12px; }
+.message-panel .char { display:flex; flex-direction: column; align-items:center; gap:6px; }
+.message-panel .avatar { width: var(--avatar-size, 64px); height: var(--avatar-size, 64px); border-radius: 50%; object-fit: cover; }
+.message-panel .name { color:#0f5132; font-weight:700; font-size: 12px; }
+.message-panel .msg { color:#0f5132; font-weight:600; align-self:center; font-size: var(--msg-font, 16px); }
+.stage { position: relative; width: 100%; height: auto; }
+.house-wrap { position: relative; width: 100%; height: auto; }
+.house { display:block; width:100%; height:auto; max-height: var(--house-max-height, 100%); object-fit: contain; user-select:none; pointer-events:none; background: transparent; }
 .hotzone { position:absolute; background: rgba(0,0,0,0); border: 2px dashed transparent; border-radius: 8px; cursor: pointer; display:flex; align-items:center; justify-content:center; }
 .hotzone:focus-visible { outline: 2px solid #2563eb; }
 .hotzone:disabled { cursor: default; }
@@ -16,9 +22,9 @@
 .second-right { right: 24%; top: 26%; width: 11%; height: 10%; }
 .third-left { left: 24%; top: 14%; width: 11%; height: 10%; }
 .third-right { right: 24%; top: 14%; width: 11%; height: 10%; }
-.ground-door { left: 44%; bottom: 6%; width: 12%; height: 14%; }
+.ground-door { left: 50%; transform: translate(-50%, 0); bottom: 6%; width: 12%; height: 12%; }
 .top { left: 44%; top: 1%; width: 12%; height: 10%; }
 
-.startup-overlay { position:absolute; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index: 2; }
+.startup-overlay { position:fixed; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index: 1000; }
 .startup-video { width: 100%; height: 100%; object-fit: contain; }
 .hand { width: var(--hand-size, clamp(32px, 8vw, 72px)); height:auto; }

@@ -1,6 +1,17 @@
 <div class="home-container">
+  <!-- Character message panel occupies its own row -->
+  <div class="message-panel" *ngIf="!showStartup" [ngStyle]="vars">
+    <div class="char">
+      <img class="avatar" [src]="avatarImage" alt="Puf-Puf" />
+      <div class="name">{{ characterName }}</div>
+    </div>
+    <div class="msg" [innerText]="gameMessage"></div>
+  </div>
+
   <div class="stage" [ngStyle]="vars">
-  <img class="house" [src]="media.houseImage" alt="Math House" [style.max-height]="vars['--house-max-height']" />
+  <div class="house-wrap">
+    <img class="house" [src]="media.houseImage" alt="Math House" [style.max-height]="vars['--house-max-height']" />
+    
 
     <!-- Startup overlay -->
     <div class="startup-overlay" *ngIf="showStartup">
@@ -12,5 +23,6 @@
     <button class="hotzone ground-door blink" (click)="open('GroundFloor')" [disabled]="isLocked('GroundFloor')">
       <img class="hand" [src]="media.handImage" alt="hand" [style.width]="vars['--hand-size']" />
     </button>
+  </div>
   </div>
 </div>

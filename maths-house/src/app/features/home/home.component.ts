@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameStateService } from '../../core/services/game-state.service';
 import { MediaConfig } from '../../core/models/media-config';
+import { LocalizationService } from '../../core/services/localization.service';
+import { TypewriterService } from '../../core/services/typewriter.service';
 import { FloorId } from '../../core/models/enums';
 
 @Component({
@@ -16,13 +18,20 @@ export class HomeComponent implements OnInit {
   showStartup = false;
   media!: MediaConfig;
   vars: Record<string, string> = {};
-  constructor(private router: Router, private game: GameStateService) {}
+  // character message panel
+  avatarImage = 'assets/images/puf_wondering.png';
+  characterName = 'Puf-Puf';
+  gameMessage = '';
+
+  constructor(private router: Router, private game: GameStateService, private i18n: LocalizationService, private typer: TypewriterService) {}
 
   ngOnInit(): void {
     this.media = this.game.media;
     this.showStartup = !this.game.snapshot.hasSeenStartupVideo;
     // Load responsive layout and compute CSS variables
     this.game.ensureResponsiveLoaded().then(() => this.computeResponsiveVars());
+    // Init localization and set the initial message
+    this.initMessage();
   }
 
   open(id: FloorId) {
@@ -74,10 +83,14 @@ export class HomeComponent implements OnInit {
     const bucket = this.pickBucket(w);
     const conf = layout?.[bucket];
     const houseMax = conf?.HouseImageMaxHeight ? `${conf.HouseImageMaxHeight}px` : '100%';
-    const handSize = conf?.CharacterImageSize ?? conf?.AnimalSize ?? 80;
+    const handSize = conf?.AnimalSize ?? 80;
+    const avatarSize = conf?.CharacterImageSize ?? 72;
+    const msgFont = conf?.FontSizes?.GameMessage ?? 16;
     this.vars = {
       '--house-max-height': houseMax,
       '--hand-size': `${handSize}px`,
+      '--avatar-size': `${avatarSize}px`,
+      '--msg-font': `${msgFont}px`,
     };
   }
 
@@ -89,5 +102,16 @@ export class HomeComponent implements OnInit {
     if (width <= 768) return 'SmallTablet';
     if (width <= 1024) return 'MediumTablet';
     return 'LargeTablet';
+  }
+
+  private async initMessage() {
+    await this.i18n.init('en');
+    const end = this.game.snapshot.floors.TopFloor === 'Resolved';
+    const full = end
+      ? this.i18n.t('main_page_end_message')
+      : this.i18n.t('main_page_start_message');
+    // Animate with typewriter
+    this.typer.start(full, (current) => (this.gameMessage = current), 25);
+    this.avatarImage = end ? 'assets/images/puf_succeded.png' : 'assets/images/puf_wondering.png';
   }
 }
