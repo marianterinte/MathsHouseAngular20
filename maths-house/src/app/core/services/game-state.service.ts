@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FloorId, FloorStatus } from '../models/enums';
 import { GameProgress } from '../models/game-progress';
 import { MediaConfig, defaultMediaConfig } from '../models/media-config';
+import { LoggerService } from './logger.service';
 
 const STORAGE_KEY = 'GameProgress';
 
@@ -24,6 +25,8 @@ export class GameStateService {
   private state$ = new BehaviorSubject<GameProgress>(this.load());
   readonly media: MediaConfig = defaultMediaConfig;
   private responsive$ = new BehaviorSubject<any | null>(null);
+
+  constructor(private log: LoggerService) {}
 
   get progress$() { return this.state$.asObservable(); }
   get snapshot() { return this.state$.value; }
@@ -98,14 +101,16 @@ export class GameStateService {
         'assets/raw/responsive_layout.json',
         'assets/i18n/responsive_layout.json' // unlikely, but keep flexible
       ];
-      for (const url of urls) {
+  for (const url of urls) {
         try {
           const res = await fetch(url);
           if (res.ok) {
             const json = await res.json();
             this.responsive$.next(json);
+    this.log.info('responsive layout loaded', url);
             break;
           }
+      this.log.warn('responsive layout not found at', url, res.status);
         } catch {}
       }
     } catch {

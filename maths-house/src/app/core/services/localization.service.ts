@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
+import { LoggerService } from './logger.service';
 
 @Injectable({ providedIn: 'root' })
 export class LocalizationService {
   private dict: Record<string, string> = {};
   private initialized = false;
   currentLang = 'en';
+
+  constructor(private log: LoggerService) {}
 
   async init(locale = 'en'): Promise<void> {
     if (this.initialized) return;
@@ -20,8 +23,10 @@ export class LocalizationService {
         if (res.ok) {
           this.dict = await res.json();
           this.initialized = true;
+          this.log.info('i18n loaded', url);
           return;
         }
+        this.log.warn('i18n not found at', url, res.status);
       } catch {}
     }
     // Provide a few defaults if file not found

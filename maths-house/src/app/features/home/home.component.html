@@ -10,26 +10,26 @@
 
   <div class="stage" [ngStyle]="vars">
   <div class="house-wrap">
-    <img class="house" [src]="media.houseImage" alt="Math House" [style.max-height]="vars['--house-max-height']" />
+  <img class="house" [src]="media.houseImage" alt="Math House" [style.max-height]="vars['--house-max-height']" (error)="onImageError('house', media.houseImage, $event)" />
     
 
     <!-- Startup overlay -->
     <div class="startup-overlay" *ngIf="showStartup">
-  <video #startupVideo class="startup-video" [src]="media.startupVideo" autoplay playsinline (ended)="onStartupEnded()"></video>
-  <audio #startupAudio [src]="media.startupAudio" autoplay></audio>
+  <video #startupVideo class="startup-video" [src]="media.startupVideo" autoplay playsinline (ended)="onStartupEnded()" (error)="onVideoError($event)"></video>
+  <audio #startupAudio [src]="media.startupAudio" autoplay (error)="onAudioError($event)"></audio>
     </div>
 
     <!-- Only ground floor button initially -->
     <button class="hotzone ground-door" (click)="open('GroundFloor')" [disabled]="isLocked('GroundFloor')">
-      <img class="hand hand-fade" [src]="media.handImage" alt="hand" [style.width]="vars['--hand-size']" />
+  <img class="hand hand-fade" [src]="media.handImage" alt="hand" [style.width]="vars['--hand-size']" (error)="onImageError('hand', media.handImage, $event)" />
     </button>
 
     <!-- First floor locked left/right -->
     <button class="hotzone first-left" (click)="open('FirstFloorLeft')" [disabled]="isLocked('FirstFloorLeft')" aria-label="First floor left locked">
-      <img class="lock" src="assets/images/lock.png" alt="locked" />
+  <img class="lock" src="assets/images/lock.png" alt="locked" (error)="onImageError('lock-left', 'assets/images/lock.png', $event)" />
     </button>
     <button class="hotzone first-right" (click)="open('FirstFloorRight')" [disabled]="isLocked('FirstFloorRight')" aria-label="First floor right locked">
-      <img class="lock" src="assets/images/lock.png" alt="locked" />
+  <img class="lock" src="assets/images/lock.png" alt="locked" (error)="onImageError('lock-right', 'assets/images/lock.png', $event)" />
     </button>
   </div>
   </div>

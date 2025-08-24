@@ -6,6 +6,7 @@ import { MediaConfig } from '../../core/models/media-config';
 import { LocalizationService } from '../../core/services/localization.service';
 import { TypewriterService } from '../../core/services/typewriter.service';
 import { FloorId } from '../../core/models/enums';
+import { LoggerService } from '../../core/services/logger.service';
 
 @Component({
   selector: 'app-home',
@@ -23,13 +24,14 @@ export class HomeComponent implements OnInit {
   characterName = 'Puf-Puf';
   gameMessage = '';
 
-  constructor(private router: Router, private game: GameStateService, private i18n: LocalizationService, private typer: TypewriterService) {}
+  constructor(private router: Router, private game: GameStateService, private i18n: LocalizationService, private typer: TypewriterService, private log: LoggerService) {}
 
   ngOnInit(): void {
     this.media = this.game.media;
     this.showStartup = !this.game.snapshot.hasSeenStartupVideo;
+  this.log.info('Home init', { showStartup: this.showStartup, media: this.media });
     // Load responsive layout and compute CSS variables
-    this.game.ensureResponsiveLoaded().then(() => this.computeResponsiveVars());
+  this.game.ensureResponsiveLoaded().then(() => { this.log.debug('Responsive loaded', this.game.responsiveLayout); this.computeResponsiveVars(); });
     // Init localization and set the initial message
     this.initMessage();
   }
@@ -70,6 +72,7 @@ export class HomeComponent implements OnInit {
   onStartupEnded(): void {
   this.game.markStartupSeen();
   this.showStartup = false;
+  this.log.info('Startup ended, intro marked as seen');
   }
 
   @HostListener('window:resize')
@@ -78,6 +81,7 @@ export class HomeComponent implements OnInit {
   }
 
   private computeResponsiveVars() {
+  this.log.debug('Compute responsive vars');
     const layout = this.game.responsiveLayout;
     const w = window.innerWidth;
     const bucket = this.pickBucket(w);
@@ -106,6 +110,7 @@ export class HomeComponent implements OnInit {
 
   private async initMessage() {
     await this.i18n.init('en');
+  this.log.debug('i18n loaded lang', this.i18n.currentLang);
     const end = this.game.snapshot.floors.TopFloor === 'Resolved';
     const full = end
       ? this.i18n.t('main_page_end_message')
@@ -114,4 +119,9 @@ export class HomeComponent implements OnInit {
     this.typer.start(full, (current) => (this.gameMessage = current), 25);
     this.avatarImage = end ? 'assets/images/puf_succeded.png' : 'assets/images/puf_wondering.png';
   }
+
+  // Media error handlers
+  onVideoError(e: Event) { this.log.error('Startup video failed to load', { src: this.media?.startupVideo, event: e }); }
+  onAudioError(e: Event) { this.log.error('Startup audio failed to load', { src: this.media?.startupAudio, event: e }); }
+  onImageError(kind: string, src: string | null, e: Event) { this.log.error('Image failed to load', { kind, src, event: e }); }
 }
