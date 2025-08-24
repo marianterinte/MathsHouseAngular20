@@ -8,6 +8,7 @@ export interface MediaConfig {
 export const defaultMediaConfig: MediaConfig = {
   houseImage: 'assets/images/math_house.png',
   handImage: 'assets/images/access_granted.png',
-  startupVideo: 'assets/raw/ZStartingVideo.mp4',
-  startupAudio: 'assets/raw/evilwitch.wav',
+  // Use files that exist under src/assets so they are bundled into /assets
+  startupVideo: 'assets/video/ZStartingVideo.mp4',
+  startupAudio: 'assets/audio/evilwitch.wav',
 };

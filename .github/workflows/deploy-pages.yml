@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -28,6 +30,20 @@ jobs:
 
       - name: Install deps
         run: npm ci
+        working-directory: maths-house
+
+      - name: Verify Raw assets are present (LFS/media)
+        run: |
+          set -e
+          echo "Listing Assets/Raw contents:" 
+          ls -lah ../Assets/Raw || true
+          for f in ZStartingVideo.mp4 evilwitch.wav i18n.en.json responsive_layout.json; do
+            if [ -f ../Assets/Raw/$f ]; then
+              echo "OK: ../Assets/Raw/$f exists"
+            else
+              echo "WARN: ../Assets/Raw/$f NOT FOUND" >&2
+            fi
+          done
         working-directory: maths-house
 
       - name: Build Angular (Pages base-href)
@@ -51,6 +67,20 @@ jobs:
           echo "Using output: $OUT"
           cp "$OUT/index.html" "$OUT/404.html"
           echo "out=$OUT" >> "$GITHUB_OUTPUT"
+        working-directory: maths-house
+
+      - name: Verify built assets exist in output
+        run: |
+          set -e
+          OUT="${{ steps.outdir.outputs.out }}"
+          echo "Listing $OUT/assets/video and $OUT/assets/audio:"
+          ls -lah "$OUT/assets/video" || true
+          ls -lah "$OUT/assets/audio" || true
+          if [ -f "$OUT/assets/video/ZStartingVideo.mp4" ]; then echo OK: video present; else echo WARN: video missing; fi
+          if [ -f "$OUT/assets/audio/evilwitch.wav" ]; then echo OK: audio present; else echo WARN: audio missing; fi
+          echo "Listing $OUT/assets/Raw for responsive_layout.json:"
+          ls -lah "$OUT/assets/Raw" || true
+          if [ -f "$OUT/assets/Raw/responsive_layout.json" ]; then echo OK: responsive_layout present; else echo WARN: responsive_layout missing; fi
         working-directory: maths-house
 
       - name: Upload artifact

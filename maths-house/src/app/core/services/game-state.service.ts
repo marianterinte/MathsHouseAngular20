@@ -92,8 +92,12 @@ export class GameStateService {
   async ensureResponsiveLoaded(): Promise<void> {
     if (this.responsive$.value) return;
     try {
-      // Try capitalized Raw first (present under src/assets/Raw), then lowercase raw (external mapped).
-      const urls = ['assets/Raw/responsive_layout.json', 'assets/raw/responsive_layout.json'];
+      // Prefer files shipped under src/assets, then fall back to mapped external Assets.
+      const urls = [
+        'assets/Raw/responsive_layout.json',
+        'assets/raw/responsive_layout.json',
+        'assets/i18n/responsive_layout.json' // unlikely, but keep flexible
+      ];
       for (const url of urls) {
         try {
           const res = await fetch(url);

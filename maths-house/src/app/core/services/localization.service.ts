@@ -10,8 +10,9 @@ export class LocalizationService {
     if (this.initialized) return;
     this.currentLang = locale;
     const urls = [
-      `assets/raw/i18n.${locale}.json`,
-      `assets/Raw/i18n.${locale}.json`,
+      `assets/i18n/i18n.${locale}.json`, // primary location under src/assets
+      `assets/raw/i18n.${locale}.json`,  // external mapped lowercase
+      `assets/Raw/i18n.${locale}.json`,  // external mapped capitalized
     ];
     for (const url of urls) {
       try {
