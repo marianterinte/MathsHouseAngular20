@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:common="clr-namespace:GCMS.MathHouse.UI.Common"
+             x:Class="GCMS.MathHouse.FreeMathProblemPage"
+             Title="Math Problem"
+             BackgroundColor="White">
+
+    <ScrollView>
+        <Grid RowSpacing="10" Padding="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>  <!-- Character Message Area -->
+                <RowDefinition Height="Auto"/>  <!-- Problem Statement -->
+                <RowDefinition Height="Auto"/>  <!-- Answer Display -->
+                <RowDefinition Height="Auto"/>  <!-- Numeric Keyboard -->
+                <RowDefinition Height="Auto"/>  <!-- Feedback -->
+                <RowDefinition Height="Auto"/>  <!-- Back Button -->
+            </Grid.RowDefinitions>
+
+            <!-- Character Message Area - Similar to FreeMathPage -->
+            <Border Grid.Row="0"
+                    BackgroundColor="#E0FFE0"
+                    Stroke="DarkGreen"
+                    StrokeThickness="1"
+                    Padding="15"
+                    HorizontalOptions="Fill"
+                    Margin="10,10,10,5"
+                    StrokeShape="RoundRectangle 15,15">
+                <Grid ColumnDefinitions="Auto,*" 
+                      VerticalOptions="Center" 
+                      ColumnSpacing="15">
+                    
+                    <!-- Character Section -->
+                    <StackLayout Grid.Column="0" 
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Spacing="8">
+                        
+                        <!-- Character Image Container with Interactive Circle -->
+                        <Grid HorizontalOptions="Center"
+                              VerticalOptions="Center">
+                            
+                            <!-- Outer circle indicator (concentric) -->
+                            <Ellipse x:Name="InteractionCircle"
+                                    Fill="Transparent"
+                                    Stroke="Gray"
+                                    StrokeThickness="15"
+                                    Opacity="0.6"
+                                    WidthRequest="120"
+                                    HeightRequest="120"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                <Ellipse.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnCharacterImageTapped" />
+                                </Ellipse.GestureRecognizers>
+                            </Ellipse>
+                            
+                            <!-- Character Image with circular clip -->
+                            <Image x:Name="CharacterImage"
+                                   Source="puf_wondering.png"
+                                   WidthRequest="110"
+                                   HeightRequest="110"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Aspect="AspectFill">
+                                <Image.Clip>
+                                    <EllipseGeometry Center="55,55" RadiusX="55" RadiusY="55" />
+                                </Image.Clip>
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnCharacterImageTapped" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Grid>
+                        
+                        <!-- Character Name Label -->
+                        <Label x:Name="CharacterNameLabel"
+                               Text="Puf-Puf"
+                               TextColor="DarkGreen"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
+                               FontSize="14"
+                               MinimumHeightRequest="20"/>
+                    </StackLayout>
+
+                    <!-- Encouraging Message -->
+                    <Label x:Name="EncouragingLabel"
+                           Grid.Column="1"
+                           Text="Solve this problem to help me collect the magical ingredient!"
+                           TextColor="DarkGreen"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Fill"
+                           HorizontalTextAlignment="Start"
+                           VerticalTextAlignment="Center"
+                           LineBreakMode="WordWrap"
+                           MaxLines="10"
+                           MinimumHeightRequest="60"/>
+                </Grid>
+            </Border>
+
+            <!-- Problem Statement -->
+            <Label x:Name="ProblemLabel"
+                   Grid.Row="1"
+                   FontSize="18"
+                   HorizontalTextAlignment="Center"
+                   VerticalOptions="Center"
+                   Margin="10,5,10,10"
+                   FontAttributes="Bold"
+                   TextColor="DarkBlue"/>
+
+            <!-- Answer Display with Hearts Above -->
+            <StackLayout Grid.Row="2"
+                        HorizontalOptions="Center"
+                        Spacing="10">
+                
+                <!-- Hearts Display -->
+                <StackLayout x:Name="HeartsContainer"
+                            Orientation="Horizontal"
+                            HorizontalOptions="Center"
+                            Spacing="10"
+                            Margin="0,0,0,10">
+                    <Label x:Name="Heart1" Text="❤️" FontSize="20" />
+                    <Label x:Name="Heart2" Text="❤️" FontSize="20" />
+                    <Label x:Name="Heart3" Text="❤️" FontSize="20" />
+                </StackLayout>
+                
+                <!-- Answer Display Frame -->
+                <Frame BackgroundColor="#F5F5F5"
+                       BorderColor="DarkBlue"
+                       CornerRadius="15"
+                       Padding="20"
+                       HorizontalOptions="Center"
+                       MinimumWidthRequest="300"
+                       Margin="0,0,0,10">
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="15">
+                        <Label x:Name="EquationLabel"
+                               FontSize="24"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               TextColor="DarkBlue"
+                               FontAttributes="Bold" />
+
+                        <!-- Answer Display -->
+                        <Border BackgroundColor="White"
+                                Stroke="DarkBlue"
+                                StrokeThickness="2"
+                                StrokeShape="RoundRectangle 8,8"
+                                Padding="12"
+                                MinimumWidthRequest="80"
+                                MinimumHeightRequest="50">
+                            <Label x:Name="AnswerDisplayLabel"
+                                   FontSize="24"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"
+                                   BackgroundColor="Transparent"
+                                   TextColor="DarkBlue"
+                                   FontAttributes="Bold"
+                                   Text="?"
+                                   Margin="5" />
+                        </Border>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+            <!-- Numeric Keyboard -->
+            <common:NumericKeyboard x:Name="KeyboardControl"
+                                   Grid.Row="3"
+                                   Margin="0,10"/>
+
+            <!-- Feedback Label -->
+            <Label x:Name="FeedbackLabel"
+                   Grid.Row="4"
+                   FontSize="16"
+                   HorizontalTextAlignment="Center"
+                   IsVisible="False"
+                   Margin="0,5"
+                   FontAttributes="Bold"/>
+
+            <!-- Back Button -->
+            <!--<Button x:Name="BackButton"
+                    Grid.Row="5"
+                    Text="⬅️ Back to Story"
+                    Clicked="OnBackClicked"
+                    HorizontalOptions="Center"
+                    BackgroundColor="#E0E0E0"
+                    TextColor="DarkSlateGray"
+                    CornerRadius="10"
+                    Padding="15,8"
+                    Margin="0,10,0,20"/>-->
+
+            <!-- Audio Element (hidden) -->
+            <toolkit:MediaElement x:Name="audioElement"
+                                 IsVisible="False"
+                                 ShouldAutoPlay="True"
+                                 ShouldLoopPlayback="True" />
+
+        </Grid>
+    </ScrollView>
+</ContentPage>

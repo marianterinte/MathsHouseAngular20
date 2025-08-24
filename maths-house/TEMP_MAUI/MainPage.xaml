@@ -1,0 +1,212 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GCMS.MathHouse.MainPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             BackgroundColor="White">
+
+	<Grid>
+		<!-- LAYER 1: Splash image (initially visible) -->
+		<Image x:Name="SplashImage"
+               Source="splashloading.png"
+               Aspect="AspectFill"
+               IsVisible="True"
+               BackgroundColor="Black"
+               HorizontalOptions="FillAndExpand"
+               VerticalOptions="FillAndExpand"
+               ZIndex="1000" />
+		<ScrollView>
+			<Grid x:Name="MainLayoutGrid"
+      HorizontalOptions="FillAndExpand"
+      Padding="0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<!-- Game Message - Updated to match FreeMathPage style with fixed sizing -->
+				<Border Grid.Row="0"
+                    BackgroundColor="#E0FFE0"
+                    Stroke="DarkGreen"
+                    StrokeThickness="1"
+                    Padding="15"
+                    HorizontalOptions="Fill"
+                    Margin="10"
+                    StrokeShape="RoundRectangle 15,15">
+					<Grid ColumnDefinitions="Auto,*" VerticalOptions="Center" ColumnSpacing="15">
+
+						<!-- Character Section -->
+						<StackLayout Grid.Column="0" 
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Spacing="8">
+							<Image x:Name="PufPufHelperImage"
+						       Source="puf_wondering.png"
+						       WidthRequest="100"
+						       HeightRequest="100"
+						       HorizontalOptions="Start"
+						       Aspect="AspectFill">
+								<Image.Clip>
+									<EllipseGeometry Center="50,50" RadiusX="50" RadiusY="50" />
+								</Image.Clip>
+							</Image>
+
+							<!-- Character Name Label -->
+							<Label x:Name="CharacterNameLabel"
+						       Text="Puf-Puf"
+						       TextColor="DarkGreen"
+						       FontAttributes="Bold"
+						       HorizontalTextAlignment="Center"
+						       FontSize="12"
+						       MinimumHeightRequest="20"/>
+						</StackLayout>
+
+						<!-- Message Text with fixed sizing like FreeMathPage -->
+						<Label x:Name="GameMessageLabel"  
+                           Grid.Column="1"  
+                           TextColor="DarkGreen"  
+                           FontAttributes="Bold"  
+                           HorizontalOptions="Fill"  
+                           HorizontalTextAlignment="Start"  
+                           VerticalTextAlignment="Center"  
+                           LineBreakMode="WordWrap"  
+                           MaxLines="10"
+                           MinimumHeightRequest="60" />
+					</Grid>
+				</Border>
+
+				<!-- About Button -->
+				<Button Grid.Row="1"
+                    Text="ℹ️ Mai mult..."
+                    x:Name="AboutButton"
+                    WidthRequest="200"
+                    Clicked="OnAboutClicked"
+                    BackgroundColor="#E0E0FF"
+                    TextColor="White"
+                    IsVisible="False"
+                    CornerRadius="10"
+					FontSize="Large"
+                    HorizontalOptions="Center" />
+
+				<!-- House container -->
+				<Grid Grid.Row="2"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  HorizontalOptions="Center"
+                  VerticalOptions="Center">
+
+					<!-- House image -->
+					<Image x:Name="HouseImage"
+                       Source="math_house.png"
+                       Aspect="AspectFit" />
+
+					<!-- Animal layout grid -->
+					<Grid x:Name="HouseGrid">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<!-- GROUND FLOOR -->
+						<Image x:Name="GroundFloorAnimal" Grid.Row="4" Grid.Column="2" ClassId="GroundFloor" IsVisible="True" Source="animal_icon.png">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Tapped="OnAnimalTapped" />
+							</Image.GestureRecognizers>
+
+						</Image>
+						<ImageButton x:Name="GroundFloorButton" Grid.Row="4" Grid.Column="2" Source="access_granted.png" CornerRadius="25" Opacity="0.6" Padding="0" Clicked="OnGroundFloorClicked" />
+
+						<!-- FIRST FLOOR LEFT -->
+						<Image x:Name="FirstFloorLeftAnimal" Grid.Row="3" Grid.Column="1" ClassId="FirstFloorLeft" IsVisible="False">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Tapped="OnAnimalTapped" />
+							</Image.GestureRecognizers>
+						</Image>
+						<ImageButton x:Name="FirstFloorLeftButton" Grid.Row="3" Grid.Column="1" Source="lock.png" Opacity="0.9" BackgroundColor="#AA001B44" Clicked="OnFirstFloorLeftClicked" />
+
+						<!-- FIRST FLOOR RIGHT -->
+						<Image x:Name="FirstFloorRightAnimal" Grid.Row="3" Grid.Column="3" ClassId="FirstFloorRight" IsVisible="False">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Tapped="OnAnimalTapped" />
+							</Image.GestureRecognizers>
+						</Image>
+						<ImageButton x:Name="FirstFloorRightButton" Grid.Row="3" Grid.Column="3" Source="lock.png" Opacity="0.9" BackgroundColor="#AA001B44" Clicked="OnFirstFloorRightClicked" />
+
+						<!-- SECOND FLOOR LEFT -->
+						<Image x:Name="SecondFloorLeftAnimal" Grid.Row="2" Grid.Column="1" ClassId="SecondFloorLeft" IsVisible="False">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Tapped="OnAnimalTapped" />
+							</Image.GestureRecognizers>
+						</Image>
+						<ImageButton x:Name="SecondFloorLeftButton" Grid.Row="2" Grid.Column="1" Source="lock.png" Opacity="0.9" BackgroundColor="#AA001B44" Clicked="OnSecondFloorLeftClicked" />
+
+						<!-- SECOND FLOOR RIGHT -->
+						<Image x:Name="SecondFloorRightAnimal" Grid.Row="2" Grid.Column="3" ClassId="SecondFloorRight" IsVisible="False">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Tapped="OnAnimalTapped" />
+							</Image.GestureRecognizers>
+						</Image>
+						<ImageButton x:Name="SecondFloorRightButton" Grid.Row="2" Grid.Column="3" Source="lock.png" Opacity="0.9" BackgroundColor="#AA001B44" Clicked="OnSecondFloorRightClicked" />
+
+						<!-- THIRD FLOOR LEFT -->
+						<Image x:Name="ThirdFloorLeftAnimal" Grid.Row="1" Grid.Column="1" ClassId="ThirdFloorLeft" IsVisible="False">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Tapped="OnAnimalTapped" />
+							</Image.GestureRecognizers>
+						</Image>
+						<ImageButton x:Name="ThirdFloorLeftButton" Grid.Row="1" Grid.Column="1" Source="lock.png" Opacity="0.9" BackgroundColor="#AA001B44" Clicked="OnThirdFloorLeftClicked" />
+
+						<!-- THIRD FLOOR RIGHT -->
+						<Image x:Name="ThirdFloorRightAnimal" Grid.Row="1" Grid.Column="3" ClassId="ThirdFloorRight" IsVisible="False">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Tapped="OnAnimalTapped" />
+							</Image.GestureRecognizers>
+						</Image>
+						<ImageButton x:Name="ThirdFloorRightButton" Grid.Row="1" Grid.Column="3" Source="lock.png" Opacity="0.9" BackgroundColor="#AA001B44" Clicked="OnThirdFloorRightClicked" />
+
+						<!-- TOP FLOOR -->
+						<Image x:Name="TopFloorAnimal" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" ClassId="TopFloor" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Tapped="OnAnimalTapped" />
+							</Image.GestureRecognizers>
+						</Image>
+						<ImageButton x:Name="TopFloorButton" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Source="lock.png" Opacity="0.9" BackgroundColor="#AA001B44" HorizontalOptions="Center" VerticalOptions="Center" Clicked="OnTopFloorClicked" />
+
+					</Grid>
+				</Grid>
+
+				<!--Entry point for Wizard Rescue Quest-->
+				<Button Grid.Row="3"
+                    Text="🧙‍♂️ Rescue Wizard Math"
+                    x:Name="WizardRescueButton"
+                    WidthRequest="220"
+                    Clicked="OnWizardRescueClicked"
+                    BackgroundColor="#FFF7E0"
+                    TextColor="DarkGoldenrod"
+                    CornerRadius="10"
+                    FontSize="Large"
+                    HorizontalOptions="Center"
+                    Margin="0,20,0,20" />
+
+				<!-- Audio element for background music -->
+				<toolkit:MediaElement
+				x:Name="audioElement"
+				IsVisible="False"
+				ShouldAutoPlay="True"
+				ShouldLoopPlayback="True" />
+			</Grid>
+		</ScrollView>
+
+	</Grid>
+</ContentPage>

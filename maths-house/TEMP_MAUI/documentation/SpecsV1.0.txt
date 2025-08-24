@@ -1,0 +1,55 @@
+﻿CREATE A 
+In the SpecsV1.0.txt I want you to write the full specifications for this application.
+I want you first to read all the files and analyze the logic and extract your self the logic.
+However I have explained the business logic just below.
+
+
+!!! What I need actually is a set of instructions for the AI to migrate this maui code to an angular application ( mobile friendly ) with the same functionalities.
+I need a STEP BY STEP GUIDE for the AI to follow. for an agent like co pilot to follow.)
+Once the AI has the instructions it will be able to create the angular application with the same functionalities.
+
+For example: 1. Create a new Angular project using the Angular CLI.
+2. Set up routing in the Angular application to navigate between different views.
+3. Create components based on the existing Maui pages.
+4. Implement services to handle data fetching and business logic.
+5. Use Angular Material or Bootstrap for UI components to ensure a mobile-friendly design.
+
+
+BUSINES LOGIC EXPLAINED: So Let me explain first what the app does:
+
+PART ONE - MAIN PAGE
+1. On the MainPage we have an image representing a house with some question marks on each window. 
+The house has groundfloor, first,second, third and top floor.
+The ground floor has a door entrance. first, second and third have 2 windows ( left and right) 
+Top Floor has just one window.
+In the begining the user sees the house and flickering hand at the first floor and 2 question mark buttons at first floor.
+When the user clicks on the hand it will redirect to GameLevelPage.
+It will start the progress of a new level. See GameLevelService and GameProgressService.
+On the GameLevelService we will display a question and a keboaoard. clicking/tapping on the keyboard will fill the answer box.
+When the user completes the answer and clicks on submit button, we will check if the answer is correct or not.
+If the answer is correct we will update the GameProgressService to mark that level as completed.
+Then we will go back to MainPage and we will update the house image to show that the first floor left window is now completed ( no question mark, no flickering hand), but we will show a picture of the first animal
+mapped to that level. Over the ground floor door. The same will apply for all the levels.
+Each level has an animal mapped to it and an operation see the GameLevelService,GameProgressService.
+
+PART TWO - FREE MATH PAGE.
+On the FreeMathPage we will have a map of ingredients to invoke as spell to free the wizzard named "Math".
+For the user to collect all ingredients it must complete all the problems see FreeMathGameFlowController, IngredientQuestService.
+Starting a quest will redirect to FreeMathProblemPage.
+After compleeting all the ingredients see the logic on the FreeMathPage, the user wil be congratulated and will be redirected to MainPage where
+the top floor willl be completed and you can see the wizzard "Math" on the top floor window.
+
+Tapping on a floor animal or the wizzard will play a video and sound.
+
+There are also typing animations and music. 
+There are  also transaltions and multiple language support.
+
+OTHER PAGES
+SettingsPage, AboutPage.
+
+SO PLEASE WRITE THE STEP BY STEP GUIDE FOR THE AI TO FOLLOW TO CREATE THE ANGULAR APPLICATION in the SpecsForAI.txt file.
+Be shore to include all the details and logic explained above. Step by step as the AI will follow the steps to create the application.
+
+
+
+

@@ -1,0 +1,21 @@
+﻿-------------------1.TEST-------------------
+Pentru a testa usor mergi in GameStateService.cs si schimbi  QuestionsCount = 7, in 1 ca sa ai numa cate un calcul pe nivel.
+
+1. Testeaza te rog pe emulator si pe tableta real daca poti toata functionalitatea aplicatiei cap coada. Daor doua teste doar doua device-uri, un telefon si o tableta.
+Ce urmarim este daca sunt defecte de design.
+
+
+-------------------2. BUGS-------------------
+1. Cand minimizezi aplicatia muzica ramane in continuare cantand. :)
+2. Fa butonul de home un pic mai sexy cu contur rotund si un pic mai mare poate.
+3. Lipsesc niste traduceri in limba romana pentru numele animalutelor salvate ( cand termini un etaj iti zice ai salvat un animal pe "Azorel" etc.)
+4. In partea a doua a jocului cica cateodata jocul se termina la 4/7 ingrediente colectate. Desi eu nu am experimientat asta ( Adita mi-a zis). ( s-ar putea sa nu se reproduca)
+ 
+
+-------------------3. FEATURES-------------------
+1. La pagina de settings adauga un buton: Sound: ON/OFF (poate sa fie control de al cu slide sau cum vrei tu) butonul va fi deasupra la butonul EXIT.
+In cazul in care e on comportamentul e ca pana acum adica muzica canta, altfel nu canta niciodata nimic nici sunet.
+2. Gandeste-te si implementeaza daca ai chef si timp o anumiatie misto la pasul in care termina un nivel din casa si ii zice bravo esti un mare haker.(ceva video etc.)
+3. Gandeste-te la un meniu special in settings gen un alt butonn numit "Math Configurations" unde sa putem face niste configurari ale operatiilor uita-te la GameStateService.cs acolo sunt definite.
+As face un JSON de unde sa le incarce ca si optiuni si sa poata parintele sa isi configureze ce vrea el de exemplu:
+Pe nivelul 1 sa poata configureze adunarea a doua numere pana la 10 sau imultirea a doua numere, depinde ce vrea el.

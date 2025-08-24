@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FloorId, FloorStatus } from '../models/enums';
 import { GameProgress } from '../models/game-progress';
+import { MediaConfig, defaultMediaConfig } from '../models/media-config';
 
 const STORAGE_KEY = 'GameProgress';
 
@@ -21,9 +22,12 @@ function defaultFloors(): Record<FloorId, FloorStatus> {
 @Injectable({ providedIn: 'root' })
 export class GameStateService {
   private state$ = new BehaviorSubject<GameProgress>(this.load());
+  readonly media: MediaConfig = defaultMediaConfig;
+  private responsive$ = new BehaviorSubject<any | null>(null);
 
   get progress$() { return this.state$.asObservable(); }
   get snapshot() { return this.state$.value; }
+  get responsiveLayout() { return this.responsive$.value; }
 
   load(): GameProgress {
     try {
@@ -57,10 +61,51 @@ export class GameStateService {
     this.save();
   }
 
+  /** Allows overriding media filenames/paths at runtime (e.g., from Settings). */
+  setMediaConfig(partial: Partial<MediaConfig>) {
+    Object.assign((this as any).media, partial);
+  }
+
+  /** Resets the game to the initial state. */
+  resetToInitial(options: { preserveIntroSeen?: boolean } = {}) {
+    const keepIntro = options.preserveIntroSeen ?? false;
+    const next: GameProgress = {
+      version: 1,
+      floors: defaultFloors(),
+      hasReachedPart2: false,
+      collectedIngredients: [],
+      collectedMagicNumbers: {},
+      hasSeenStartupVideo: keepIntro ? this.snapshot.hasSeenStartupVideo : false,
+    };
+    this.state$.next(next);
+    this.save();
+  }
+
   shouldRedirectToFreeMathPage(): boolean {
     const s = this.snapshot;
     const allIngredients = 7; // placeholder constant
     const topDone = s.floors.TopFloor === 'Resolved';
     return s.hasReachedPart2 && !topDone && s.collectedIngredients.length < allIngredients;
+  }
+
+  /** Loads responsive layout JSON to drive sizing/positions based on device buckets. */
+  async ensureResponsiveLoaded(): Promise<void> {
+    if (this.responsive$.value) return;
+    try {
+      // Try capitalized Raw first (present under src/assets/Raw), then lowercase raw (external mapped).
+      const urls = ['assets/Raw/responsive_layout.json', 'assets/raw/responsive_layout.json'];
+      for (const url of urls) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const json = await res.json();
+            this.responsive$.next(json);
+            break;
+          }
+        } catch {}
+      }
+    } catch {
+      // ignore; fallback CSS will be used
+    }
   }
 }

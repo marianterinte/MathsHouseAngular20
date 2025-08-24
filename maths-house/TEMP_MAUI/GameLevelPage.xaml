@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="GCMS.MathHouse.GameLevelPage"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:common="clr-namespace:GCMS.MathHouse.UI.Common"
+    Title=""
+	BackgroundColor="White">
+
+	<ScrollView>
+		<VerticalStackLayout 
+            Padding="{OnIdiom Phone=20, Tablet=40}" 
+            Spacing="{OnIdiom Phone=20, Tablet=30}">
+
+			<!-- Header cu imagine și mesaj - Layout responsiv -->
+			<Grid HorizontalOptions="FillAndExpand"
+                  VerticalOptions="Start"
+                  ColumnSpacing="{OnIdiom Phone=15, Tablet=25}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<!-- Imagine circulară responsivă -->
+				<Frame Grid.Column="0"
+                       Padding="0"
+                       CornerRadius="{OnIdiom Phone=60, Tablet=80}"
+                       WidthRequest="{OnIdiom Phone=120, Tablet=160}"
+                       HeightRequest="{OnIdiom Phone=120, Tablet=160}"
+                       MinimumWidthRequest="{OnIdiom Phone=80, Tablet=120}"
+                       MinimumHeightRequest="{OnIdiom Phone=80, Tablet=120}"
+                       MaximumWidthRequest="{OnIdiom Phone=150, Tablet=200}"
+                       MaximumHeightRequest="{OnIdiom Phone=150, Tablet=200}"
+                       IsClippedToBounds="True"
+                       HasShadow="True"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Start">
+					<Image x:Name="PufPufHelperImage"
+                           Source="puf_at_door.png"
+                           Aspect="AspectFill"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="FillAndExpand" />
+				</Frame>
+
+				<!-- Mesajul jocului -->
+				<Label x:Name="GameMessageLabel"
+                       Grid.Column="1"
+                       TextColor="DarkGreen"
+                       FontAttributes="Bold"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Start"
+                       VerticalTextAlignment="Center"
+                       LineBreakMode="WordWrap"
+                       FontSize="48"
+                       IsVisible="True"
+                       MaxLines="5"
+                       Margin="10,0,0,0" />
+			</Grid>
+
+			<!-- Imaginea cu ușa la start -->
+			<Frame x:Name="StartDoorImageFrame"
+    Padding="0"
+    CornerRadius="{OnIdiom Phone=20, Tablet=30}"
+    WidthRequest="{OnIdiom Phone=180, Tablet=280}"
+    HeightRequest="{OnIdiom Phone=180, Tablet=280}"
+    Margin="{OnIdiom Phone='0,10', Tablet='0,20'}"
+    HorizontalOptions="Center"
+    IsClippedToBounds="True"
+    HasShadow="False"
+    BackgroundColor="Transparent">
+
+				<Image x:Name="StartDoorImage"
+           Source="doorlocked.png"
+           Aspect="AspectFill"
+           HorizontalOptions="FillAndExpand"
+           VerticalOptions="FillAndExpand"
+           IsVisible="False" />
+			</Frame>
+
+			<!-- Butonul de start -->
+			<Button x:Name="StartButton"
+                    FontSize="{OnIdiom Phone=Large, Tablet=24}"
+                    HeightRequest="{OnIdiom Phone=50, Tablet=65}"
+                    MinimumWidthRequest="{OnIdiom Phone=200, Tablet=280}"
+                    MaximumWidthRequest="{OnIdiom Phone=300, Tablet=400}"
+                    HorizontalOptions="Center"
+                    Clicked="OnStartGameClicked"
+                    Text="Start"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    CornerRadius="25" />
+
+			<!-- Status-ul întrebărilor cu butoane -->
+			<Frame x:Name="QuestionStatusFrame"
+                   IsVisible="False"
+                   BackgroundColor="#F8F9FA"
+                   BorderColor="LightGray"
+                   CornerRadius="15"
+                   Padding="{OnIdiom Phone=10, Tablet=15}"
+                   HorizontalOptions="Center"
+                   MaximumWidthRequest="{OnIdiom Phone=400, Tablet=600}">
+				<StackLayout Orientation="Horizontal"
+                             x:Name="QuestionStatusButtonsStack"
+                             HorizontalOptions="Center"
+                             Spacing="{OnIdiom Phone=5, Tablet=8}" />
+			</Frame>
+
+			<!-- Exercițiu cu răspuns inline -->
+			<Frame IsVisible="False"
+                   x:Name="ExerciseFrame"
+                   BackgroundColor="#F5F5F5"
+                   BorderColor="LightGray"
+                   CornerRadius="15"
+                   Padding="{OnIdiom Phone=20, Tablet=30}"
+                   HorizontalOptions="Center"
+                   MinimumWidthRequest="{OnIdiom Phone=300, Tablet=400}"
+                   MaximumWidthRequest="{OnIdiom Phone=500, Tablet=650}">
+				<StackLayout Orientation="Horizontal"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Spacing="{OnIdiom Phone=10, Tablet=15}">
+					<Label x:Name="ExerciseLabel"
+                           FontSize="{OnIdiom Phone=36, Tablet=48}"
+                           IsVisible="True"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           TextColor="DarkBlue"
+                           FontAttributes="Bold" />
+
+					<!-- Afișarea răspunsului inline -->
+					<Border x:Name="AnswerFrame"
+                            BackgroundColor="White"
+                            Stroke="DarkBlue"
+                            StrokeThickness="2"
+                            StrokeShape="RoundRectangle 8,8"
+                            Padding="{OnIdiom Phone=8, Tablet=12}"
+                            MinimumWidthRequest="{OnIdiom Phone=60, Tablet=80}"
+                            MinimumHeightRequest="{OnIdiom Phone=40, Tablet=50}">
+						<Label x:Name="AnswerDisplayLabel"
+                               FontSize="{OnIdiom Phone=24, Tablet=32}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               BackgroundColor="Transparent"
+                               TextColor="DarkBlue"
+                               FontAttributes="Bold"
+                               Text="?"
+                               Margin="5" />
+					</Border>
+				</StackLayout>
+			</Frame>
+
+			<!-- Tastatura numerică personalizată folosind componenta reutilizabilă -->
+			<Frame IsVisible="False"
+                   x:Name="NumericKeyboardFrame">
+				<common:NumericKeyboard x:Name="KeyboardControl"/>
+			</Frame>
+
+			<!-- Feedback -->
+			<Label x:Name="FeedbackLabel"
+                   FontSize="{OnIdiom Phone=22, Tablet=28}"
+                   TextColor="DarkGreen"
+                   IsVisible="False"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   FontAttributes="Bold"
+                   Margin="{OnIdiom Phone='0,10', Tablet='0,15'}" />
+
+			<!-- Next (ascuns acum, logica se execută pe OK) -->
+			<Button x:Name="NextButton"
+                    Clicked="OnNextClicked"
+                    IsVisible="False"
+                    FontSize="{OnIdiom Phone=Medium, Tablet=Large}"
+                    HeightRequest="{OnIdiom Phone=45, Tablet=60}"
+                    MinimumWidthRequest="{OnIdiom Phone=150, Tablet=200}"
+                    MaximumWidthRequest="{OnIdiom Phone=250, Tablet=350}"
+                    HorizontalOptions="Center"
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    CornerRadius="20" />
+
+			<!-- Rezumat scor -->
+			<Label x:Name="ScoreSummaryLabel"
+                   FontSize="{OnIdiom Phone=22, Tablet=28}"
+                   IsVisible="False"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   FontAttributes="Bold"
+                   TextColor="DarkBlue"
+                   Margin="{OnIdiom Phone='0,15', Tablet='0,20'}" />
+
+			<!-- Imaginea cu ușa la final -->
+			<Image x:Name="EndDoorImage"
+                   Source="doorunlocked.png"
+                   WidthRequest="{OnIdiom Phone=150, Tablet=200}"
+                   HeightRequest="{OnIdiom Phone=150, Tablet=200}"
+                   HorizontalOptions="Center"
+                   IsVisible="False" />
+
+			<!-- Imagine rezultat -->
+			<Frame IsVisible="False"
+                   x:Name="ResultImageFrame"
+                   CornerRadius="15"
+                   Padding="0"
+                   HorizontalOptions="Center"
+                   WidthRequest="{OnIdiom Phone=200, Tablet=280}"
+                   HeightRequest="{OnIdiom Phone=200, Tablet=280}"
+                   MinimumWidthRequest="{OnIdiom Phone=150, Tablet=200}"
+                   MinimumHeightRequest="{OnIdiom Phone=150, Tablet=200}"
+                   MaximumWidthRequest="{OnIdiom Phone=250, Tablet=350}"
+                   MaximumHeightRequest="{OnIdiom Phone=250, Tablet=350}"
+                   IsClippedToBounds="True"
+                   HasShadow="True">
+				<Image x:Name="ResultImage"
+                       IsVisible="False"
+                       Aspect="AspectFill"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand" />
+			</Frame>
+
+			<!-- Rezultate întrebări -->
+			<Frame x:Name="QuestionResultsFrame"
+                   IsVisible="False"
+                   BackgroundColor="#F8F9FA"
+                   BorderColor="LightGray"
+                   CornerRadius="10"
+                   Padding="{OnIdiom Phone=15, Tablet=25}"
+                   HorizontalOptions="FillAndExpand"
+                   MaximumWidthRequest="{OnIdiom Phone=500, Tablet=700}">
+				<StackLayout x:Name="QuestionResultsStack"
+                             IsVisible="False"
+                             Spacing="{OnIdiom Phone=8, Tablet=12}">
+					<Label x:Name="QuestionResultsLabel"
+                           FontSize="{OnIdiom Phone=18, Tablet=24}"
+                           TextColor="DarkSlateGray"
+                           LineBreakMode="WordWrap" />
+				</StackLayout>
+			</Frame>
+
+			<!-- Butoane finale -->
+			<VerticalStackLayout Spacing="{OnIdiom Phone=15, Tablet=20}"
+                                 HorizontalOptions="Center"
+                                 Margin="{OnIdiom Phone='0,20,0,0', Tablet='0,30,0,0'}">
+
+				<Button x:Name="CongratulationsButton"
+                        FontSize="{OnIdiom Phone=20, Tablet=26}"
+                        IsVisible="False"
+                        Clicked="OnCongratulationsClicked"
+                        HeightRequest="{OnIdiom Phone=50, Tablet=65}"
+                        MinimumWidthRequest="{OnIdiom Phone=200, Tablet=280}"
+                        MaximumWidthRequest="{OnIdiom Phone=300, Tablet=400}"
+                        HorizontalOptions="Center"
+                        BackgroundColor="#4CAF50"
+                        TextColor="White"
+                        CornerRadius="25" />
+
+				<Button x:Name="RetryButton"
+                        FontSize="{OnIdiom Phone=20, Tablet=26}"
+                        IsVisible="False"
+                        Clicked="OnRetryClicked"
+                        HeightRequest="{OnIdiom Phone=50, Tablet=65}"
+                        MinimumWidthRequest="{OnIdiom Phone=200, Tablet=280}"
+                        MaximumWidthRequest="{OnIdiom Phone=300, Tablet=400}"
+                        HorizontalOptions="Center"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        CornerRadius="25" />
+				<toolkit:MediaElement
+                x:Name="audioElement"
+                IsVisible="False"
+	            ShouldAutoPlay="True"
+                ShouldLoopPlayback="True"
+                 />
+			</VerticalStackLayout>
+
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>

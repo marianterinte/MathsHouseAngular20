@@ -1,16 +1,16 @@
 <div class="home-container">
-  <div class="stage">
-  <img class="house" src="assets/images/math_house.png" alt="Math House" />
+  <div class="stage" [ngStyle]="vars">
+  <img class="house" [src]="media.houseImage" alt="Math House" [style.max-height]="vars['--house-max-height']" />
 
     <!-- Startup overlay -->
     <div class="startup-overlay" *ngIf="showStartup">
-  <video #startupVideo class="startup-video" src="assets/video/ZStartingVideo.mp4" autoplay playsinline (ended)="onStartupEnded()"></video>
-  <audio #startupAudio src="assets/audio/evilwitch.wav" autoplay></audio>
+  <video #startupVideo class="startup-video" [src]="media.startupVideo" autoplay playsinline (ended)="onStartupEnded()"></video>
+  <audio #startupAudio [src]="media.startupAudio" autoplay></audio>
     </div>
 
     <!-- Only ground floor button initially -->
     <button class="hotzone ground-door blink" (click)="open('GroundFloor')" [disabled]="isLocked('GroundFloor')">
-      <img class="hand" src="assets/images/mappicon.png" alt="hand" />
+      <img class="hand" [src]="media.handImage" alt="hand" [style.width]="vars['--hand-size']" />
     </button>
   </div>
 </div>

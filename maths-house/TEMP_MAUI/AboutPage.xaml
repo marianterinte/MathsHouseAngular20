@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GCMS.MathHouse.AboutPage" 
+             BackgroundColor="White">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PrimaryColor">#512BD4</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+	<ScrollView>
+		<VerticalStackLayout Padding="20" Spacing="20">
+            <!-- MENTAI Link as first item -->
+            <Button x:Name="MentaiLinkButton"
+                    Text="More on MENTAI"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    BackgroundColor="#E0E0FF"
+                    TextColor="DarkBlue"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Clicked="OnMentaiLinkClicked"
+                    HorizontalOptions="FillAndExpand" />
+            
+			<Label x:Name="DescriptionLabel"
+                   FontSize="18"
+                   TextColor="Black"
+                   HorizontalTextAlignment="Center" />
+			<BoxView HeightRequest="2" />
+			<Label x:Name="SupportMessageLabel"
+                   FontSize="17"
+                   TextColor="Black"
+                   HorizontalTextAlignment="Center" />
+			
+            <!-- Revolut Section -->
+            <VerticalStackLayout Spacing="10">
+                <Grid ColumnDefinitions="*,Auto" RowSpacing="5">
+                    <Label x:Name="RevolutLabel"
+                           Grid.Column="0"
+                           FontAttributes="Bold"
+                           FontSize="16"
+                           TextColor="Black"
+                           HorizontalOptions="Start"/>
+                    <Button Text="Copy"
+                            Grid.Column="1"
+                            FontSize="14"
+                            Clicked="OnCopyRevolutClicked"
+                            HorizontalOptions="End"
+                            WidthRequest="80"
+                            HeightRequest="40"
+                            Margin="10,0,0,0"/>
+                </Grid>
+            </VerticalStackLayout>
+            
+            <!-- Salt Section -->
+            <Grid ColumnDefinitions="*,Auto" RowSpacing="5">
+                <Label x:Name="SaltLabel"
+                       Grid.Column="0"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       TextColor="Black"
+                       HorizontalOptions="Start"/>
+                <Button Text="Copy"
+                        Grid.Column="1"
+                        FontSize="14"
+                        Clicked="OnCopySaltClicked"
+                        HorizontalOptions="End"
+                        WidthRequest="80"
+                        HeightRequest="40"
+                        Margin="10,0,0,0"/>
+            </Grid>
+
+			<Label x:Name="SaltBankLabel"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   TextColor="Black"
+                   HorizontalTextAlignment="Center" />
+			<Label x:Name="ContactMessageLabel"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   TextColor="Black"
+                   HorizontalTextAlignment="Center" />
+			<Label x:Name="EmailLabel"
+                   FontAttributes="Bold,Italic"
+                   FontSize="16"
+                   TextColor="Black"
+                   HorizontalTextAlignment="Center" />
+
+			<Label x:Name="FutureNotesTitle"
+           FontSize="18"
+           FontAttributes="Bold"
+           HorizontalTextAlignment="Center"
+           TextColor="DarkGreen" />
+			<Label x:Name="FutureFeature1"
+           FontSize="16"
+           HorizontalTextAlignment="Center"
+           TextColor="DarkGray"
+           Text="🛠️ ..." />
+			<Label x:Name="FutureFeature2"
+           FontSize="16"
+           HorizontalTextAlignment="Center"
+           TextColor="DarkGray"
+           Text="🎬 ..." />
+			<Label x:Name="FutureFeature3"
+           FontSize="16"
+           HorizontalTextAlignment="Center"
+           TextColor="DarkGray"
+           Text="📚 ..." />
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>

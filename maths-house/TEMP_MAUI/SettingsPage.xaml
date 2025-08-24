@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GCMS.MathHouse.SettingsPage"
+             Title="Setări"
+             BackgroundColor="White"
+             BackgroundImageSource="settings_back.png">
+	<ScrollView>
+		<Grid Padding="20" RowSpacing="20">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<!-- Spacer pentru centrare verticală -->
+			<BoxView Grid.Row="0" />
+
+			<!-- Conținutul principal -->
+			<VerticalStackLayout Grid.Row="1" 
+                               Spacing="20"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+
+				<!-- Frame pentru selector de limbă -->
+				<Frame BorderColor="DarkGray"
+                       CornerRadius="15"
+                       Padding="15"
+                       Margin="0,0,0,30"
+                       HasShadow="True"
+                       HorizontalOptions="FillAndExpand"
+                       MaximumWidthRequest="300"
+                       MinimumWidthRequest="250">
+					<Picker x:Name="LanguagePicker"
+                            FontSize="20"
+                            BackgroundColor="Transparent"
+                            TextColor="Black"
+                            HorizontalOptions="FillAndExpand"
+                            SelectedIndexChanged="OnLanguageChanged" />
+				</Frame>
+
+				<!-- Container pentru butoane -->
+				<VerticalStackLayout Spacing="15" 
+                                   HorizontalOptions="Center">
+
+					<Button x:Name="ContinueButton"
+                            FontSize="22"
+                            HeightRequest="50"
+                            MinimumWidthRequest="200"
+                            MaximumWidthRequest="280"
+                            HorizontalOptions="FillAndExpand"
+                            Clicked="OnContinueClicked"
+                            BackgroundColor="#E0FFE0"
+                            TextColor="DarkGreen"
+                            CornerRadius="10"
+                            />
+
+					<Button x:Name="NewGameButton"
+                            FontSize="22"
+                            HeightRequest="50"
+                            MinimumWidthRequest="200"
+                            MaximumWidthRequest="280"
+                            HorizontalOptions="FillAndExpand"
+                            Clicked="OnNewGameClicked"
+                            BackgroundColor="#E0FFE0"
+                            TextColor="BlueViolet"
+                            CornerRadius="10"
+                            />
+
+					<Button x:Name="AboutButton"
+                            FontSize="22"
+                            HeightRequest="50"
+                            MinimumWidthRequest="200"
+                            MaximumWidthRequest="280"
+                            HorizontalOptions="FillAndExpand"
+                            Clicked="OnAboutClicked"
+                            BackgroundColor="Gold"
+                            TextColor="Black"
+                            CornerRadius="50"
+                            />
+
+					<Button x:Name="ExitButton"
+                            FontSize="22"
+                            HeightRequest="50"
+                            MinimumWidthRequest="200"
+                            MaximumWidthRequest="280"
+                            HorizontalOptions="FillAndExpand"
+                            Clicked="OnExitClicked"
+                            BackgroundColor="#FFE0E0"
+                            TextColor="DarkRed"
+                            CornerRadius="10"
+                            />
+
+				</VerticalStackLayout>
+			</VerticalStackLayout>
+
+			<!-- Spacer pentru centrare verticală -->
+			<BoxView Grid.Row="2" />
+		</Grid>
+	</ScrollView>
+</ContentPage>

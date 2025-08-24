@@ -1,6 +1,6 @@
 .home-container { display:flex; align-items:center; justify-content:center; padding:0; height: 100vh; width: 100vw; overflow:hidden; }
 .stage { position: relative; width: 100%; height: 100%; }
-.house { position:absolute; inset:0; width:100%; height:100%; object-fit: contain; display:block; user-select:none; pointer-events:none; background:#000; }
+.house { position:absolute; inset:0; width:100%; height:100%; max-height: var(--house-max-height, 100%); object-fit: contain; display:block; user-select:none; pointer-events:none; background: transparent; }
 .hotzone { position:absolute; background: rgba(0,0,0,0); border: 2px dashed transparent; border-radius: 8px; cursor: pointer; display:flex; align-items:center; justify-content:center; }
 .hotzone:focus-visible { outline: 2px solid #2563eb; }
 .hotzone:disabled { cursor: default; }
@@ -21,4 +21,4 @@
 
 .startup-overlay { position:absolute; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index: 2; }
 .startup-video { width: 100%; height: 100%; object-fit: contain; }
-.hand { width: clamp(24px, 6vw, 40px); height:auto; }
+.hand { width: var(--hand-size, clamp(32px, 8vw, 72px)); height:auto; }

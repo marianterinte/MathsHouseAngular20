@@ -1,0 +1,276 @@
+﻿Title: Migration Playbook – GCMS.MathHouse (MAUI) to Angular (mobile‑friendly)
+
+Goal
+- Recreate the MAUI app in Angular with identical gameplay, visuals, audio/video behavior, translations, and app flow.
+- Deliver a mobile‑friendly web app (PWA recommended) with optional mobile wrappers (Capacitor) if needed later.
+
+High‑level Feature Map
+- MainPage: house illustration with 8 interactive positions (GroundFloor door, 1st/2nd/3rd floors left/right windows, TopFloor). Shows flickering hand for first actionable spot, question‑mark overlays on locked windows, animal image on completed windows, wizard “Math” in top window when Free Math quest completes. Typewriter intro/end messages. Background music.
+- GameLevelPage: question + numeric keyboard + answer display + feedback + progress; on success updates progress and returns to MainPage. Background music.
+- FreeMathPage: narrative driven quest with steps; character image/name; animated typewriter text; interaction circle that glows when interaction is enabled; progress map overlay and progress bar; tutorial popups; background music.
+- FreeMathProblemPage: one problem with custom numeric keyboard, attempts hearts (3), feedback messages, character hints, success returns to FreeMathPage. Background music.
+- Video playback when tapping a completed floor animal or the wizard. Audio/music management per page.
+- SettingsPage, AboutPage.
+- Multi‑language support and runtime language switching.
+
+Technical Stack
+- Angular 17+ with standalone components and built‑in routing.
+- Angular Material (or Bootstrap) for layout and responsive UI; use CSS variables for font scaling.
+- PWA support (service worker, offline assets, install prompt).
+- Translations via @ngx-translate/core with HttpLoader.
+- Audio via Howler.js (or HTML5 Audio) wrapped in an Angular AudioService.
+- Video via HTML5 <video> wrapped in a dialog component (VideoPlayerComponent).
+- Animations via Angular animations + CSS; typewriter via a small custom RxJS service.
+- State persistence in localStorage (or IndexedDB later). RxJS BehaviorSubjects as the single source of truth.
+
+Folder Structure (proposal)
+- src/app/core
+  - services: audio.service.ts, video.service.ts, localization.service.ts, game-state.service.ts, game-level.service.ts, game-progress.service.ts, free-math-flow.service.ts, ingredient-quest.service.ts, responsive-layout.service.ts, tutorial-popup.service.ts, typewriter.service.ts
+  - models: floor.ts, floor-status.ts, game-progress.ts, math-problem.ts, ingredient.ts, free-math-step.ts, enums.ts
+  - guards: redirect-home.guard.ts (replicates ShouldRedirectToFreeMathPage)
+- src/app/features
+  - main: main-page.component.ts
+  - level: game-level.component.ts
+  - free-math: free-math.component.ts, free-math-problem.component.ts
+  - settings: settings.component.ts
+  - about: about.component.ts
+  - video: video-player.component.ts (dialog)
+- src/app/shared
+  - components: numeric-keyboard, progress-map-overlay, animal-badge
+  - directives: glow.directive.ts (for interactive circle glow)
+- src/assets
+  - images: house, animals, quest maps
+  - audio: music and sfx
+  - videos: animal/wizard videos
+  - i18n: translation json files
+
+Data Models (TypeScript interfaces)
+- FloorId: "GroundFloor" | "FirstFloorLeft" | "FirstFloorRight" | "SecondFloorLeft" | "SecondFloorRight" | "ThirdFloorLeft" | "ThirdFloorRight" | "TopFloor".
+- FloorStatus: Locked | Available | Resolved.
+- GameProgress: per-floor status + per-level stats; ingredient progress; hasReachedPart2; collectedIngredients; collectedMagicNumbers.
+- IngredientType: MagicWool, CarrotDust, FishBones, Feather, Eucalyptus, Leaf, BambooElixir, MagicWand, WizardHat (map to existing 7 used by quest; keep names consistent with code and translations).
+- MathProblem: statement, correctAnswer, ingredient (IngredientType), metadata.
+- FreeMathStep: narrativeText, characterImageUrl?, problem?: MathProblem, nextStepIndex?: number.
+
+Assets Mapping (from MAUI)
+- Animals: bunny.png, cat.png, dog.png, parrot.png, panda.png, koala.png, owl.png.
+- Puf‑Puf: puf_wondering.png, puf_succeded.png, pufpuf.png, puf_at_door.png.
+- House: math_house.png, math_house_unlockedtop.png; question marks and lock overlays; hand icon.
+- Free Math quest maps: freemath_home.png and freemath_quest1_completed.png … freemath_quest7_completed.png.
+- Videos: Resources/Videos/* mapped to assets/videos.
+
+Routing Map
+- /              -> MainPage
+- /level/:id     -> GameLevelPage for a FloorId
+- /free-math     -> FreeMathPage
+- /free-math/problem -> FreeMathProblemPage (state passed via service)
+- /settings      -> SettingsPage
+- /about         -> AboutPage
+- /video/:animal -> Video dialog or route (opened from MainPage taps)
+- A guard on "/" to mimic ShouldRedirectToFreeMathPage (see GameStateService.ShouldRedirectToFreeMathPage).
+
+Step-by-Step Migration Guide
+1) Initialize the Angular workspace
+   - Create a new Angular app with routing and SCSS.
+   - Add Angular Material (or Bootstrap), @ngx-translate, Howler.js, and any icon pack you plan to use.
+   - Enable PWA support.
+   - Create the folder structure described above.
+
+2) Copy assets
+   - Export images from MAUI Resources/Images into src/assets/images, preserving names used in code.
+   - Export quest map images listed in the csproj.
+   - Export audio tracks and sound effects into src/assets/audio.
+   - Export videos into src/assets/videos.
+
+3) Implement localization
+   - Port the string keys used in MAUI (e.g., main_page_start_message, main_page_end_message, animal_names_*, free_math_* labels, problem_page_* labels) into JSON files under src/assets/i18n (e.g., en.json, ro.json).
+   - Create LocalizationService to initialize and expose translate(key, params?) and current language setter/getter.
+   - Wire localization into all components; never hardcode UI strings.
+
+4) Build state and persistence services
+   - GameStateService
+     - Manages floors collection and statuses, mirrors GameStateService.cs logic.
+     - Fields: floors: Record<FloorId, FloorStatus>; ingredientIds; isIngredientCollected; collectedMagicNumbers; flags: hasReachedPart2.
+     - Methods: load()/save() to localStorage under key "GameProgress"; getStatus(id), setStatus(id, status), markIngredientCollected(id, magicNumber), getCollectedMagicNumber(id), getCollectedIngredients(), getIngredientsCount().
+     - Method shouldRedirectToFreeMathPage(): replicate ShouldRedirectToFreeMathPage().
+   - GameProgressService
+     - Tracks per-level completion, exposes observables for UI.
+     - Notifies GameStateService when a floor is resolved.
+   - GameLevelService
+     - Creates/generated exercises for each floor; maps floor to animal and operation type. Emits current question and validates answers.
+   - FreeMathFlowService (FreeMathGameFlowController)
+     - Holds steps array (narratives + problems). Provides getCurrentStep(), advance(), resetProgress(), loadProgress(), getProgressMapImageName(), getCollectedIngredientsDisplay().
+   - IngredientQuestService
+     - Encapsulates ingredient catalog, display names, and mapping to character images.
+   - ResponsiveLayoutService
+     - Exposes getFontSize(token) and breakpoints used by components for mobile/desktop font scaling.
+   - TutorialPopupService
+     - Provides tutorials (character interaction, completion popup). Use Angular Material Dialog.
+   - AudioService
+     - Play/stop/pause music per route (main page, level page, free math page), as well as tap/feedback SFX. Ensure stopOnRouteChange.
+   - VideoService
+     - Opens a dialog with a <video> element, given an animal id.
+
+5) Set up routing and guards
+   - Define routes per the map above.
+   - Home redirect logic: a CanActivate guard queries GameStateService.shouldRedirectToFreeMathPage() and navigates to /free-math if needed.
+
+6) Shared UI components and directives
+   - NumericKeyboardComponent
+     - Inputs: maxLength (default 3). Outputs: numberClicked(digit), deleteClicked(), okClicked().
+     - Mobile friendly buttons, large tap targets.
+   - ProgressMapOverlayComponent
+     - Shows quest map image and close button; supports fade animations.
+   - AnimalBadgeComponent
+     - Displays animal image or question mark/lock overlays for a window.
+   - GlowDirective
+     - Applies a gentle blue glow loop when enabled (used for FreeMathPage interaction circle and MainPage hand/first step cue).
+
+7) MainPage component
+   - Layout
+     - App bar with title and version, home icon.
+     - Helper card with Puf‑Puf image and typewriter text.
+     - House illustration grid with 8 interactive hot‑zones matching button/image overlay coordinates from MAUI.
+   - Behavior
+     - OnInit: load state, initialize translations and layout sizes, start MainPage music.
+     - Show flickering hand/indicator on the first actionable spot.
+     - For each floor position:
+       - If Locked/Available: show question mark (and lock for lower floors when needed), tap leads to /level/:id.
+       - If Resolved: show mapped animal badge; tapping plays corresponding video via VideoService.
+     - After returning from GameLevel, update the specific window to resolved and display the animal above the door/position like in MAUI.
+     - End‑state: when GameStateService.GameIsResolved() is true, switch house image to math_house_unlockedtop.png; show end message with typewriter and Puf‑Puf success image; show final popup once.
+     - Free Math entry button navigates to /free-math.
+   - Animations
+     - TypewriterAnimationService for start/end/floor messages; cancel on destroy.
+     - AudioService stops music on route leave.
+
+8) GameLevel component
+   - UI
+     - Labels: game message, feedback, score/summary, exercise, answer display; frames/panels similar to MAUI structure.
+     - NumericKeyboardComponent integrated below.
+     - Buttons: Start, Next/OK, Retry, Congratulations.
+   - Flow (mirror GameLevelFlowController)
+     - Start: show first question and enable keyboard.
+     - Keyboard interactions build the answer display.
+     - Submit checks via GameLevelService; correctness triggers feedback, summary update, and when level finishes, call GameProgressService to mark floor as completed; navigate back to MainPage.
+     - Music: start on init, stop on destroy.
+
+9) FreeMathPage component
+   - UI
+     - Narrative label with typewriter animation.
+     - Character image + name (from step or from ingredient fallback, matching MAUI switch logic).
+     - Blue interaction circle with GlowDirective; turns gray when not interactive.
+     - Progress card: label with count, bar fill width computed from container width and ingredient count, details text listing collected ingredients; map button with badge.
+     - Buttons: back to Main, reset story.
+     - Progress map overlay with fade in/out.
+   - Behavior
+     - OnInit: set hasReachedPart2=true (equivalent to PreferencesManager), load progress, refresh steps per localization, update current step, play FreeMath music.
+     - Tutorial: show character interaction tutorial on first visit.
+     - Interaction
+       - When typewriter completes, enable interaction and start glow.
+       - On character tap: if step has problem -> navigate to /free-math/problem; else if nextStepIndex -> advance; else -> show completion popup; if accepted -> mark game complete in main state and navigate "/".
+     - Reset flow: clear progress, reload, reset tutorial flag, update UI.
+
+10) FreeMathProblem component
+   - Inputs/state
+     - Receives current MathProblem from FreeMathFlowService.
+     - Tracks currentAnswer (string), attemptsLeft (3), hearts UI labels, feedback label.
+   - Keyboard handling
+     - numberClicked: append (limit to 3 chars); delete: backspace; ok: submit.
+   - Submit logic
+     - If correct: show success feedback, update ingredient in GameStateService (mark collected, store magic number if used), navigate back to /free-math with success=true to trigger HandleProblemSolved.
+     - If wrong: decrement attempts, animate heart loss; show encouraging messages per attempt; if attempts exhausted: show correct answer, then navigate back with success=true (forgiving path) as in MAUI.
+   - Audio: start same music as GameLevel; stop on destroy.
+
+11) Video playback
+   - From MainPage, tapping a resolved animal or wizard opens VideoPlayerComponent/dialog.
+   - Map animal id (FloorId or animal name) to video file path and optional sound effect; close on end or backdrop click.
+
+12) Responsive layout & typography
+   - ResponsiveLayoutService exposes tokens used in MAUI (e.g., CharacterName, FreeMathNarrative etc.).
+   - Implement CSS variables for font sizes and adjust on viewport breakpoints (mobile first). Ensure large tap areas and adequate contrast.
+
+13) Translations and content parity checklist
+   - Ensure all keys referenced in C# appear in i18n JSON files: main_page_start_message, main_page_end_message, animal_names_*, free_math_progress_label, free_math_progress_start, free_math_progress_complete, free_math_reset_*, problem_page_* including hint dialogs and wrong/correct messages.
+   - Verify dynamic strings and pluralization (interpolations) match.
+
+14) Application flow parity checks
+   - Startup redirect: Guard must send the user to /free-math if part 2 should be active and top floor not yet completed; else to "/".
+   - Returning from /level/:id updates the specific window and animal image.
+   - Completing all Free Math ingredients switches top window to wizard and unlocks final house state.
+   - Show end popup once; maintain a flag so it isn’t repeated.
+
+15) Persistence details
+   - Storage keys
+     - GameProgress: whole GameProgress object (floors statuses, hasReachedPart2, collectedIngredients, collectedMagicNumbers, any step indices).
+     - FreeMathProgress: currentStepIndex, collectedIngredients array, narrative/tutorial flags, progress map state.
+   - Use a version field for migrations; gracefully handle missing/old schemas.
+
+16) Audio strategy
+   - Single AudioService instance with channels: musicMain, musicLevel, musicFreeMath; play on component enter and stop on leave. Catch and ignore stop errors (to mirror MAUI’s silent catches).
+   - Keep volumes reasonable; allow mute toggle in SettingsPage.
+
+17) Settings and About pages
+   - Settings: language selection, audio on/off, reset progress buttons for both parts.
+   - About: replicate informational content and copy‑to‑clipboard for IBAN fields.
+
+18) Animations and polish
+   - TypewriterAnimationService exposes start(text, speedMs?) with cancel() and an isAnimating flag; emits an event when complete (used to enable interaction/glow).
+   - Hand/flicker on the first actionable spot; glow directive for interactive circle.
+   - Overlay fades for progress map and splash when present.
+
+19) Testing
+   - Unit tests for services: state transitions, redirects, answer validation, progress map computation.
+   - Component tests: MainPage hot‑zone rendering per state; keyboard behavior.
+   - E2E tests: new user flow, complete one floor, complete one Free Math problem, complete full quest.
+
+20) PWA and deployment
+   - Configure service worker to cache assets (images, audio, videos where feasible) and i18n.
+   - Add manifest with icons and theme colors; verify installability on Android.
+   - CI step to build and deploy to static hosting (e.g., GitHub Pages, Azure Static Web Apps).
+
+21) Mapping table (C# to Angular)
+- GCMS.MathHouse.BL.GameStateService -> core/services/game-state.service.ts
+- GameProgressService -> core/services/game-progress.service.ts
+- GameLevelService -> core/services/game-level.service.ts (plus UI controller logic pushed into component)
+- MainPage.xaml(.cs) -> features/main/main-page.component.ts
+- GameLevelPage.xaml(.cs) -> features/level/game-level.component.ts
+- FreeMathGameFlowController -> core/services/free-math-flow.service.ts
+- IngredientQuestService -> core/services/ingredient-quest.service.ts
+- FreeMathPage.xaml(.cs) -> features/free-math/free-math.component.ts
+- FreeMathProblemPage.xaml(.cs) -> features/free-math/free-math-problem.component.ts
+- UI/Common/NumericKeyboard.xaml -> shared/components/numeric-keyboard
+- VideoPlayerPage -> features/video/video-player.component.ts
+- LocalizationService -> core/services/localization.service.ts (+ ngx-translate)
+- AudioManager -> core/services/audio.service.ts
+- TypewriterAnimationService -> core/services/typewriter.service.ts
+- Layout/Responsive services -> core/services/responsive-layout.service.ts
+
+22) Acceptance checklist
+- Visual parity of house and windows on common mobile sizes.
+- Same number of floors/windows and identical unlock order.
+- Numeric keyboard entry limits and behavior match.
+- Attempts heart logic in FreeMathProblem matches MAUI.
+- Typewriter timing and interaction enablement replicate behavior.
+- Music starts/stops correctly per route.
+- Videos play on animal/wizard taps.
+- Translations available and switchable; default language equals MAUI default.
+- Persisted progress survives reloads and restores the correct page via guard.
+
+Implementation Hints from MAUI Code
+- MainPage: messages use typewriter, end state uses math_house_unlockedtop.png, and Puf‑Puf success image; floor taps call GameFlowController to navigate. Replicate with router navigation and services.
+- GameLevelPage: create flow controller inside component; in Angular keep logic in component + GameLevelService; wire numeric keyboard outputs to handlers.
+- FreeMathPage: steps with narrative text and optional MathProblem; enable character interaction when typewriter stops; glow the circle; maintain _hasNewProgressUpdate to color the map button and animate its badge.
+- FreeMathProblemPage: three hearts, wrong answer encouragements, forgiving completion when attempts end.
+- ShouldRedirectToFreeMathPage is driven by part‑2 flag, top floor status, and ingredients count (=7). Implement the same logic in the guard.
+
+Non‑goals
+- Do not port MAUI XAML; use Angular layouts.
+- Do not add new gameplay; keep parity.
+- Keep offline‑first optional; videos may be streamed or locally hosted based on size constraints.
+
+Deliverables
+- Angular workspace with components/services as above.
+- Assets placed under src/assets with same file names.
+- i18n JSON files with all keys used in C#.
+- README with run/build instructions and any environment notes.

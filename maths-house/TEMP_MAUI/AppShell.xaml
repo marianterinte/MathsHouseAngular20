@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="GCMS.MathHouse.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:GCMS.MathHouse"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.BackgroundColor="White">
+
+    <Shell.FlyoutHeader>
+        <Grid HeightRequest="100">
+            <Label x:Name="VersionLabel"
+                   Text="CASA LUI MATH v7.0"
+                   FontSize="24"
+                   TextColor="DarkGreen"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontAttributes="Bold"/>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Acasă" Icon="home.png">
+        <ShellContent Route="MainPage"
+              ContentTemplate="{DataTemplate local:MainPage}" />
+    </FlyoutItem>
+
+    <!-- ShellContent pentru pagina de nivel (ascunsă din meniu) -->
+    <ShellContent
+        Title="Game Level"
+        ContentTemplate="{DataTemplate local:GameLevelPage}"
+        Route="GameLevelPage"
+        FlyoutItemIsVisible="False" />
+
+    <ShellContent
+        Title="Video"
+        Route="VideoPlayerPage"
+        ContentTemplate="{DataTemplate local:VideoPlayerPage}" />
+
+    <ShellContent
+        Title="Settings"
+        Route="SettingsPage"
+        ContentTemplate="{DataTemplate local:SettingsPage}"
+        FlyoutItemIsVisible="False" />
+
+    <ShellContent
+        Title="Free Math"
+        Route="FreeMathPage"
+        ContentTemplate="{DataTemplate local:FreeMathPage}"
+        FlyoutItemIsVisible="False" />
+
+    <ShellContent Title="Despre" Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
+
+    <!-- Buton de resetare -->
+    <MenuItem Text="Joc Nou"
+              IconImageSource="reset.png"
+              Clicked="ResetGame"/>
+
+    <Shell.TitleView>
+        <Grid Padding="10,0" ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="CASA LUI MATH"
+                   x:Name="AppTitle"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   TextColor="DarkBlue"
+                   Grid.Column="0" />
+
+       
+
+            <ImageButton Source="home.png"
+                     Grid.Column="1"
+                     WidthRequest="30"
+                     HeightRequest="30"
+                     BackgroundColor="White"
+                     Clicked="OnHomeClicked"
+                     HorizontalOptions="End"
+                     VerticalOptions="Center"
+                     Margin="0,0,10,0" />
+
+            <Label Text="v1.4"
+                   Grid.Column="3"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   HorizontalOptions="End"
+                   VerticalOptions="Center"
+                   TextColor="DarkGreen"
+                   Margin="0,0,10,0" />
+        </Grid>
+    </Shell.TitleView>
+
+</Shell>

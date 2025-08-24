@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="14.0" package="com.companyname.gcms.mathhouse">
+	<application android:allowBackup="true" android:icon="@mipmap/myappicon" android:supportsRtl="true" android:label="Math's House"></application>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+</manifest>

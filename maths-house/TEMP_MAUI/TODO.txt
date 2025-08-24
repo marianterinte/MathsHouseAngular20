@@ -1,0 +1,6 @@
+﻿###0. Check again problem texts and results in english and romanian.
+1. Test again progress for game completion
+2. Test different devices.
+###3. Some music on main page and freegame page.
+4. Remake the images. they do not look good.
+5. SCREENSHOTS IN THE MARKETPLACE

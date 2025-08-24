@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GCMS.MathHouse.FreeMathPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Wizard Math Rescue"
+             BackgroundColor="White">
+
+    <ScrollView>
+        <Grid x:Name="MainLayoutGrid" 
+              HorizontalOptions="FillAndExpand"
+              Padding="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>  <!-- Character Message Area -->
+                <RowDefinition Height="Auto"/>  <!-- Progress Card -->
+                <RowDefinition Height="*"/>     <!-- Story Image - Big like MainPage -->
+                <RowDefinition Height="Auto"/>  <!-- Navigation Controls -->
+            </Grid.RowDefinitions>
+
+            <!-- Subtle Background Image -->
+            <Image Grid.RowSpan="4"
+                   Source="freemath_home.png"
+                   Aspect="Fill"
+                   HorizontalOptions="FillAndExpand"
+                   VerticalOptions="FillAndExpand"
+                   Opacity="0.9"
+                   ZIndex="-1" />
+
+            <!-- Character Message Area - Improved layout -->
+            <Border Grid.Row="0"
+                    BackgroundColor="#E0FFE0"
+                    Stroke="DarkGreen"
+                    StrokeThickness="1"
+                    Padding="15"
+                    HorizontalOptions="Fill"
+                    Margin="10"
+                    StrokeShape="RoundRectangle 15,15">
+                <Grid ColumnDefinitions="Auto,*,Auto" 
+                      VerticalOptions="Center" 
+                      ColumnSpacing="15">
+                    
+                    <!-- Character Section with proper layout -->
+                    <StackLayout Grid.Column="0" 
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Spacing="8">
+                        
+                        <!-- Character Image Container with Interactive Circle -->
+                        <Grid HorizontalOptions="Center"
+                              VerticalOptions="Center">
+                            
+                            <!-- Outer circle indicator (concentric) -->
+                            <Ellipse x:Name="InteractionCircle"
+                                    Fill="Transparent"
+                                    Stroke="Gray"
+                                    StrokeThickness="35"
+                                    Opacity="0.6"
+                                    WidthRequest="130"
+                                    HeightRequest="130"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                <Ellipse.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnCharacterImageTapped" />
+                                </Ellipse.GestureRecognizers>
+                            </Ellipse>
+                            
+                            <!-- Character Image with circular clip -->
+                            <Image x:Name="CharacterImage"
+                                   Source="puf_wondering.png"
+                                   WidthRequest="110"
+                                   HeightRequest="110"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Aspect="AspectFill">
+                                <Image.Clip>
+                                    <EllipseGeometry Center="55,55" RadiusX="55" RadiusY="55" />
+                                </Image.Clip>
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnCharacterImageTapped" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Grid>
+                        <!-- Character Name Label - Above the image -->
+                        <Label x:Name="CharacterNameLabel"
+                               Text="Puf-Puf"
+                               TextColor="DarkGreen"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
+                               FontSize="14"
+                               MinimumHeightRequest="20"/>
+                    </StackLayout>
+
+                    <!-- Narrative Text with typewriter effect -->
+                    <Label x:Name="NarrativeLabel"
+                           Grid.Column="1"
+                           TextColor="DarkGreen"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Fill"
+                           HorizontalTextAlignment="Start"
+                           VerticalTextAlignment="Center"
+                           LineBreakMode="WordWrap"
+                           MaxLines="100"
+                           Text=""
+                           MinimumHeightRequest="60"/>
+                </Grid>
+            </Border>
+
+            <!-- Progress Card -->
+            <Border Grid.Row="1"
+                    BackgroundColor="#F8F9FA"
+                    Stroke="#D0D7DE"
+                    StrokeThickness="1"
+                    Padding="15"
+                    HorizontalOptions="Fill"
+                    Margin="10,5"
+                    StrokeShape="RoundRectangle 12,12">
+                
+                <StackLayout Spacing="12">
+                    <!-- Round Progress Map Button with Notification -->
+                    <Grid HorizontalOptions="Center">
+                        
+                        <!-- Main Round Progress Button -->
+                        <Button x:Name="ProgressMapButton"
+                                Text="🗺️"
+                                Clicked="OnProgressMapClicked"
+                                BackgroundColor="#4A90E2"
+                                TextColor="White"
+                                CornerRadius="35"
+                                WidthRequest="70"
+                                HeightRequest="70"
+                                FontSize="28"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center" />
+                        
+                        <!-- Notification Badge -->
+                        <Border x:Name="MapNotificationBadge"
+                                BackgroundColor="#FF4444"
+                                Stroke="White"
+                                StrokeThickness="2"
+                                StrokeShape="Ellipse"
+                                WidthRequest="24"
+                                HeightRequest="24"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start"
+                                Margin="0,-6,-6,0"
+                                IsVisible="False">
+                            <Label Text="!"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" />
+                        </Border>
+                    </Grid>
+                    
+                    <!-- Ingredients Progress -->
+                    <StackLayout Spacing="8">
+                        <Label x:Name="IngredientsProgressLabel"
+                               Text="Ingredients found: 0/7"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#2E7D32"
+                               HorizontalTextAlignment="Center" />
+                        
+                        <!-- Progress Bar -->
+                        <Grid HorizontalOptions="Fill">
+                            <Border BackgroundColor="#E0E0E0"
+                                    StrokeThickness="0"
+                                    HeightRequest="8"
+                                    StrokeShape="RoundRectangle 4,4"
+                                    HorizontalOptions="Fill" />
+                            <Border x:Name="ProgressBarFill"
+                                    BackgroundColor="#4CAF50"
+                                    StrokeThickness="0"
+                                    HeightRequest="8"
+                                    StrokeShape="RoundRectangle 4,4"
+                                    HorizontalOptions="Start"
+                                    WidthRequest="0" />
+                        </Grid>
+                        
+                        <Label x:Name="IngredientsDetailsLabel"
+                               Text="Begin your magical journey to rescue Wizard Math!"
+                               FontSize="12"
+                               TextColor="#666"
+                               HorizontalTextAlignment="Center"
+                               LineBreakMode="WordWrap" />
+                    </StackLayout>
+                </StackLayout>
+            </Border>
+
+            <!-- Navigation Controls -->
+            <!--<HorizontalStackLayout Grid.Row="3" 
+                                 Spacing="15"
+                                 HorizontalOptions="Center"
+                                 Margin="0,20,0,20">
+                <Button x:Name="BackToMainButton"
+                        Text="🏠 Back to Main"
+                        Clicked="OnBackToMainClicked"
+                        BackgroundColor="#E0E0E0"
+                        TextColor="DarkSlateGray"
+                        CornerRadius="10"
+                        Padding="15,8"/>
+                
+                <Button x:Name="ResetStoryButton"
+                        Text="🔄 Reset Story"
+                        Clicked="OnResetStoryClicked"
+                        BackgroundColor="#FFE4E1"
+                        TextColor="DarkRed"
+                        CornerRadius="10"
+                        Padding="15,8"/>
+            </HorizontalStackLayout>-->
+
+            <!-- Simple Full-Screen Image Popup -->
+            <Grid x:Name="ProgressImageOverlay"
+                  Grid.RowSpan="4"
+                  BackgroundColor="#E0000000"
+                  IsVisible="False"
+                  ZIndex="100">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnProgressOverlayTapped" />
+                </Grid.GestureRecognizers>
+                
+                <!-- Full-Screen Image Container -->
+                <Border BackgroundColor="Black"
+                        Stroke="Transparent"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        Margin="0">
+                    
+                    <Grid>
+                        <!-- Progress Map Image -->
+                        <Image x:Name="ProgressMapImage"
+                               Source="freemath_home.png"
+                               Aspect="AspectFit"
+                               HorizontalOptions="Fill"
+                               VerticalOptions="Fill" />
+                        
+                        <!-- Close Button -->
+                        <Button x:Name="CloseProgressButton"
+                                Text="✖"
+                                Clicked="OnCloseProgressClicked"
+                                BackgroundColor="#AA000000"
+                                TextColor="White"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                WidthRequest="50"
+                                HeightRequest="50"
+                                CornerRadius="25"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start"
+                                Margin="20" />
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Audio element for background music -->
+            <toolkit:MediaElement
+                x:Name="audioElement"
+                IsVisible="False"
+                ShouldAutoPlay="True"
+                ShouldLoopPlayback="True" />
+        </Grid>
+    </ScrollView>
+</ContentPage>
