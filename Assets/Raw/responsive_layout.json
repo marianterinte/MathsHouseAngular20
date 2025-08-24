@@ -1,0 +1,158 @@
+﻿{
+  "SmallPhone": {
+    "FontSizes": {
+      "GameMessage": 12,
+      "Feedback": 14,
+      "ScoreSummary": 16,
+      "FreeMathNarrative": 14,
+      "CharacterName": 12,
+      "ContinueButton": 16
+    },
+    "AnimalSize": 60,
+    "AnimalMargins": {
+      "TopFloor": "50,22,0,0",
+      "ThirdFloorLeft": "6,22,0,0",
+      "ThirdFloorRight": "0,22,10,0",
+      "SecondFloorLeft": "6,14,0,0",
+      "SecondFloorRight": "0,14,10,0",
+      "FirstFloorLeft": "6,10,0,0",
+      "FirstFloorRight": "0,10,10,0",
+      "GroundFloor": "4,8,4,0"
+    },
+    "RowHeights": [ 1, 1, 1, 1, 1 ],
+    "HouseImageMaxHeight": 600,
+    "FreeMathImageMaxHeight": 400,
+    "CharacterImageSize": 60,
+    "CharacterImageMargin": "10,5,10,5"
+  },
+  "MediumPhone": {
+    "FontSizes": {
+      "GameMessage": 18,
+      "Feedback": 16,
+      "ScoreSummary": 20,
+      "FreeMathNarrative": 16,
+      "CharacterName": 14,
+      "ContinueButton": 18
+    },
+    "AnimalSize": 70,
+    "AnimalMargins": {
+      "TopFloor": "70,40,0,0",
+      "ThirdFloorLeft": "10,32,0,0",
+      "ThirdFloorRight": "0,32,14,0",
+      "SecondFloorLeft": "10,20,0,0",
+      "SecondFloorRight": "0,20,14,0",
+      "FirstFloorLeft": "10,15,0,0",
+      "FirstFloorRight": "0,15,16,0",
+      "GroundFloor": "5,12,5,0"
+    },
+    "RowHeights": [ 1, 1, 1, 1, 1 ],
+    "HouseImageMaxHeight": 600,
+    "FreeMathImageMaxHeight": 500,
+    "CharacterImageSize": 70,
+    "CharacterImageMargin": "10,5,10,5"
+  },
+  "LargePhone": {
+    "FontSizes": {
+      "GameMessage": 32,
+      "Feedback": 32,
+      "ScoreSummary": 32,
+      "FreeMathNarrative": 20,
+      "CharacterName": 18,
+      "ContinueButton": 22
+    },
+    "AnimalSize": 160,
+    "AnimalMargins": {
+      "TopFloor": "160,85,0,0",
+      "ThirdFloorLeft": "22,68,0,0",
+      "ThirdFloorRight": "0,68,34,0",
+      "SecondFloorLeft": "22,45,0,0",
+      "SecondFloorRight": "0,45,34,0",
+      "FirstFloorLeft": "22,35,0,0",
+      "FirstFloorRight": "0,35,36,0",
+      "GroundFloor": "10,28,10,0"
+    },
+    "RowHeights": [ 1, 1, 1, 1, 1 ],
+    "HouseImageMaxHeight": 1300,
+    "FreeMathImageMaxHeight": 800,
+    "CharacterImageSize": 100,
+    "CharacterImageMargin": "15,10,15,10"
+  },
+  "SmallTablet": {
+    "FontSizes": {
+      "GameMessage": 24,
+      "Feedback": 16,
+      "ScoreSummary": 18,
+      "FreeMathNarrative": 18,
+      "CharacterName": 16,
+      "ContinueButton": 20
+    },
+    "AnimalSize": 100,
+    "AnimalMargins": {
+      "TopFloor": "100,55,0,0",
+      "ThirdFloorLeft": "14,45,0,0",
+      "ThirdFloorRight": "0,45,22,0",
+      "SecondFloorLeft": "14,30,0,0",
+      "SecondFloorRight": "0,30,22,0",
+      "FirstFloorLeft": "14,23,0,0",
+      "FirstFloorRight": "0,23,24,0",
+      "GroundFloor": "7,18,7,0"
+    },
+    "RowHeights": [ 1, 1, 1, 1, 1 ],
+    "HouseImageMaxHeight": 550,
+    "FreeMathImageMaxHeight": 600,
+    "CharacterImageSize": 90,
+    "CharacterImageMargin": "12,8,12,8"
+  },
+  "MediumTablet": {
+    "FontSizes": {
+      "GameMessage": 28,
+      "Feedback": 16,
+      "ScoreSummary": 20,
+      "FreeMathNarrative": 20,
+      "CharacterName": 18,
+      "ContinueButton": 22
+    },
+    "AnimalSize": 130,
+    "AnimalMargins": {
+      "TopFloor": "130,70,0,0",
+      "ThirdFloorLeft": "18,55,0,0",
+      "ThirdFloorRight": "0,55,28,0",
+      "SecondFloorLeft": "18,35,0,0",
+      "SecondFloorRight": "0,35,28,0",
+      "FirstFloorLeft": "18,27,0,0",
+      "FirstFloorRight": "0,27,30,0",
+      "GroundFloor": "8,22,8,0"
+    },
+    "RowHeights": [ 1, 1, 1, 1, 1 ],
+    "HouseImageMaxHeight": 1000,
+    "FreeMathImageMaxHeight": 700,
+    "CharacterImageSize": 110,
+    "CharacterImageMargin": "15,10,15,10"
+  },
+  "LargeTablet": {
+    "FontSizes": {
+      "GameMessage": 32,
+      "Feedback": 16,
+      "ScoreSummary": 20,
+      "FreeMathNarrative": 24,
+      "CharacterName": 20,
+      "ContinueButton": 24
+    },
+    "AnimalSize": 160,
+    "AnimalMargins": {
+      "TopFloor": "160,85,0,0",
+      "ThirdFloorLeft": "22,68,0,0",
+      "ThirdFloorRight": "0,68,34,0",
+      "SecondFloorLeft": "22,45,0,0",
+      "SecondFloorRight": "0,45,34,0",
+      "FirstFloorLeft": "22,35,0,0",
+      "FirstFloorRight": "0,35,36,0",
+      "GroundFloor": "10,28,10,0"
+    },
+    "RowHeights": [ 1, 1, 1, 1, 1 ],
+    "HouseImageMaxHeight": 1600,
+    "FreeMathImageMaxHeight": 900,
+    "CharacterImageSize": 120,
+    "CharacterImageMargin": "20,15,20,15"
+  }
+}
