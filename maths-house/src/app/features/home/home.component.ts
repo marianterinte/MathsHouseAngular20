@@ -53,9 +53,7 @@ export class HomeComponent implements OnInit {
   }
 
   onStartupEnded(): void {
-    const next = { ...this.game.snapshot, hasSeenStartupVideo: true };
-    (this.game as any).state$.next(next);
-    this.game.save();
-    this.showStartup = false;
+  this.game.markStartupSeen();
+  this.showStartup = false;
   }
 }

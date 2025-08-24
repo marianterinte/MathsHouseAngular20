@@ -49,6 +49,14 @@ export class GameStateService {
     this.state$.next(next); this.save();
   }
 
+  /** Marks that the startup video has been seen and persists the change. */
+  markStartupSeen(): void {
+    if (this.snapshot.hasSeenStartupVideo) return;
+    const next: GameProgress = { ...this.snapshot, hasSeenStartupVideo: true };
+    this.state$.next(next);
+    this.save();
+  }
+
   shouldRedirectToFreeMathPage(): boolean {
     const s = this.snapshot;
     const allIngredients = 7; // placeholder constant
