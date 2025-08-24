@@ -20,8 +20,16 @@
     </div>
 
     <!-- Only ground floor button initially -->
-    <button class="hotzone ground-door blink" (click)="open('GroundFloor')" [disabled]="isLocked('GroundFloor')">
-      <img class="hand" [src]="media.handImage" alt="hand" [style.width]="vars['--hand-size']" />
+    <button class="hotzone ground-door" (click)="open('GroundFloor')" [disabled]="isLocked('GroundFloor')">
+      <img class="hand hand-fade" [src]="media.handImage" alt="hand" [style.width]="vars['--hand-size']" />
+    </button>
+
+    <!-- First floor locked left/right -->
+    <button class="hotzone first-left" (click)="open('FirstFloorLeft')" [disabled]="isLocked('FirstFloorLeft')" aria-label="First floor left locked">
+      <img class="lock" src="assets/images/lock.png" alt="locked" />
+    </button>
+    <button class="hotzone first-right" (click)="open('FirstFloorRight')" [disabled]="isLocked('FirstFloorRight')" aria-label="First floor right locked">
+      <img class="lock" src="assets/images/lock.png" alt="locked" />
     </button>
   </div>
   </div>
