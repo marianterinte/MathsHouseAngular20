@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameStateService } from '../../core/services/game-state.service';
@@ -15,10 +15,13 @@ import { LoggerService } from '../../core/services/logger.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   showStartup = false;
   media!: MediaConfig;
   vars: Record<string, string> = {};
+  @ViewChild('startupVideo') startupVideo?: ElementRef<HTMLVideoElement>;
+  @ViewChild('startupAudio') startupAudio?: ElementRef<HTMLAudioElement>;
+  autoplayBlocked = false;
   // character message panel
   avatarImage = 'assets/images/puf_wondering.png';
   characterName = 'Puf-Puf';
@@ -28,13 +31,32 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.media = this.game.media;
-    this.showStartup = !this.game.snapshot.hasSeenStartupVideo;
-  this.log.info('Home init', { showStartup: this.showStartup, media: this.media });
+    this.showStartup = this.computeShouldShowIntro();
+    this.log.info('Home init', { showStartup: this.showStartup, media: this.media, stored: this.safeReadStoredProgress() });
     // Load responsive layout and compute CSS variables
-  this.game.ensureResponsiveLoaded().then(() => { this.log.debug('Responsive loaded', this.game.responsiveLayout); this.computeResponsiveVars(); });
+    this.game.ensureResponsiveLoaded().then(() => {
+      this.log.debug('Responsive loaded', this.game.responsiveLayout);
+      this.computeResponsiveVars();
+    });
     // Init localization and set the initial message
     this.initMessage();
   }
+
+  ngAfterViewInit(): void {
+    // Attempt autoplay after view is ready
+    if (this.showStartup) {
+      // Delay to ensure the element is in the DOM
+      setTimeout(() => this.tryStartIntro(), 0);
+    }
+  }
+
+  /**
+   * Determine if we should show the intro on landing the Home route.
+   * Rules: if query ?intro=1 => show; if ?intro=0 => hide.
+   * Otherwise: show unless localStorage flag hasSeenStartupVideo is true.
+   */
+  // (definition moved below)
+  
 
   open(id: FloorId) {
     const status = this.game.snapshot.floors[id];
@@ -73,6 +95,57 @@ export class HomeComponent implements OnInit {
   this.game.markStartupSeen();
   this.showStartup = false;
   this.log.info('Startup ended, intro marked as seen');
+  }
+
+  private tryStartIntro(): void {
+    const video = this.startupVideo?.nativeElement;
+    if (!video) { this.log.warn('Startup video element not available yet'); return; }
+    // Ensure properties satisfy autoplay policies
+    video.muted = true;
+    (video as any).playsInline = true; // iOS Safari
+    video.autoplay = true;
+    try { video.load(); } catch {}
+
+    const doPlay = () => video.play();
+    const p = doPlay();
+    if (p && typeof (p as any).then === 'function') {
+      p.then(() => {
+        this.log.info('Startup video autoplayed');
+        // Try to play the companion audio (may be blocked; best-effort)
+        const audio = this.startupAudio?.nativeElement;
+        if (audio) {
+          audio.autoplay = false; // we'll start it explicitly
+          audio.muted = false;
+          audio.currentTime = 0;
+          audio.play().catch(err => {
+            this.log.warn('Startup audio autoplay blocked (expected on most browsers). Will require user gesture.', err);
+          });
+        }
+      }).catch(err => {
+        this.log.warn('Startup video autoplay blocked; showing user gesture fallback', err);
+        this.autoplayBlocked = true;
+      });
+    } else {
+      // Older browsers: no promise, assume playing
+      this.log.info('Startup video play() returned no promise; assuming playback started');
+    }
+  }
+
+  onUserStart(): void {
+    // Triggered by user gesture to start video/audio
+    const video = this.startupVideo?.nativeElement;
+    if (video) {
+      video.muted = false; // unmute if user explicitly starts
+      (video as any).playsInline = true;
+      video.play().then(() => {
+        this.autoplayBlocked = false;
+        this.log.info('Startup video started after user gesture');
+        const audio = this.startupAudio?.nativeElement;
+        if (audio) {
+          audio.play().catch(err => this.log.warn('Audio still blocked after user gesture', err));
+        }
+      }).catch(err => this.log.error('Failed to start video on user gesture', err));
+    }
   }
 
   @HostListener('window:resize')
@@ -124,4 +197,29 @@ export class HomeComponent implements OnInit {
   onVideoError(e: Event) { this.log.error('Startup video failed to load', { src: this.media?.startupVideo, event: e }); }
   onAudioError(e: Event) { this.log.error('Startup audio failed to load', { src: this.media?.startupAudio, event: e }); }
   onImageError(kind: string, src: string | null, e: Event) { this.log.error('Image failed to load', { kind, src, event: e }); }
+
+  private safeReadStoredProgress(): any | null {
+    try {
+      const raw = localStorage.getItem('GameProgress');
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch { return null; }
+  }
+
+  /**
+   * Determine if we should show the intro on landing the Home route.
+   * Rules: if query ?intro=1 => show; if ?intro=0 => hide.
+   * Otherwise: show unless localStorage flag hasSeenStartupVideo is true.
+   */
+  private computeShouldShowIntro(): boolean {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const intro = params.get('intro');
+      if (intro === '1') { this.log.info('Intro forced ON via ?intro=1'); return true; }
+      if (intro === '0') { this.log.info('Intro forced OFF via ?intro=0'); return false; }
+    } catch {}
+    const stored = this.safeReadStoredProgress();
+    const seen = !!stored?.hasSeenStartupVideo;
+    return !seen;
+  }
 }

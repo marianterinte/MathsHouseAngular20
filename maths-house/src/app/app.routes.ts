@@ -9,8 +9,8 @@ import { redirectHomeGuard } from './core/guards/redirect-home.guard';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent, canActivate: [redirectHomeGuard] },
-	// Alias to support direct links like /home (useful with GitHub Pages SPA fallback)
-	{ path: 'home', redirectTo: '' },
+	// Alias to support direct links like /home without dropping query params
+	{ path: 'home', component: HomeComponent, canActivate: [redirectHomeGuard] },
 	{ path: 'level/:id', component: GameLevelComponent },
 	{ path: 'free-math', component: FreeMathComponent },
 	{ path: 'free-math/problem', component: FreeMathProblemComponent },

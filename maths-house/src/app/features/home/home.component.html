@@ -15,8 +15,10 @@
 
     <!-- Startup overlay -->
     <div class="startup-overlay" *ngIf="showStartup">
-  <video #startupVideo class="startup-video" [src]="media.startupVideo" autoplay playsinline (ended)="onStartupEnded()" (error)="onVideoError($event)"></video>
-  <audio #startupAudio [src]="media.startupAudio" autoplay (error)="onAudioError($event)"></audio>
+      <video #startupVideo class="startup-video" [src]="media.startupVideo" autoplay playsinline muted preload="auto"
+        (ended)="onStartupEnded()" (error)="onVideoError($event)"></video>
+      <audio #startupAudio [src]="media.startupAudio" preload="auto" (error)="onAudioError($event)"></audio>
+      <button class="start-btn" *ngIf="autoplayBlocked" (click)="onUserStart()">Start</button>
     </div>
 
     <!-- Only ground floor button initially -->

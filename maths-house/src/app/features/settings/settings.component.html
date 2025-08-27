@@ -1,1 +1,14 @@
-<div class="container">Settings placeholder</div>
+<div class="container">
+	<h2>Settings</h2>
+	<div class="field">
+		<label for="lang">Language</label>
+		<select id="lang" [(ngModel)]="selected" (change)="onLangChange()">
+			<option *ngFor="let l of langs" [value]="l.code">{{ l.label }}</option>
+		</select>
+	</div>
+
+	<div class="preview">
+		<div class="label">Preview</div>
+		<div class="sample">{{ sample }}</div>
+	</div>
+</div>

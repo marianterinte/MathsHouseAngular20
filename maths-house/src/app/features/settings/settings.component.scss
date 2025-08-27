@@ -1,1 +1,6 @@
-.container{padding:16px}
+.container{padding:16px; max-width:720px; margin:0 auto}
+.field{display:flex; gap:12px; align-items:center; margin:12px 0}
+label{min-width:100px}
+select{padding:6px 10px}
+.preview{margin-top:16px; border:1px solid #ddd; border-radius:8px; padding:12px}
+.sample{color:#1b5e20}
