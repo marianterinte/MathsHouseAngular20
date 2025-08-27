@@ -21,18 +21,29 @@
       <button class="start-btn" *ngIf="autoplayBlocked" (click)="onUserStart()">Start</button>
     </div>
 
-    <!-- Only ground floor button initially -->
+    <!-- Ground floor button -->
     <button class="hotzone ground-door" (click)="open('GroundFloor')" [disabled]="isLocked('GroundFloor')">
   <img class="hand hand-fade" [src]="media.handImage" alt="hand" [style.width]="vars['--hand-size']" (error)="onImageError('hand', media.handImage, $event)" />
     </button>
 
-    <!-- First floor locked left/right -->
-    <button class="hotzone first-left" (click)="open('FirstFloorLeft')" [disabled]="isLocked('FirstFloorLeft')" aria-label="First floor left locked">
-  <img class="lock" src="assets/images/lock.png" alt="locked" (error)="onImageError('lock-left', 'assets/images/lock.png', $event)" />
+    <!-- First floor left/right: clickable even when locked -->
+    <button class="hotzone first-left" (click)="open('FirstFloorLeft')" [attr.aria-label]="'First floor left ' + (isLocked('FirstFloorLeft') ? 'locked' : 'available')">
+      <img *ngIf="isLocked('FirstFloorLeft')" class="lock" src="assets/images/lock.png" alt="locked" (error)="onImageError('lock-left', 'assets/images/lock.png', $event)" />
     </button>
-    <button class="hotzone first-right" (click)="open('FirstFloorRight')" [disabled]="isLocked('FirstFloorRight')" aria-label="First floor right locked">
-  <img class="lock" src="assets/images/lock.png" alt="locked" (error)="onImageError('lock-right', 'assets/images/lock.png', $event)" />
+    <button class="hotzone first-right" (click)="open('FirstFloorRight')" [attr.aria-label]="'First floor right ' + (isLocked('FirstFloorRight') ? 'locked' : 'available')">
+      <img *ngIf="isLocked('FirstFloorRight')" class="lock" src="assets/images/lock.png" alt="locked" (error)="onImageError('lock-right', 'assets/images/lock.png', $event)" />
     </button>
   </div>
   </div>
 </div>
+
+<!-- Simple modal for locked floors -->
+<div class="modal-overlay" *ngIf="lockedModal.visible" (click)="closeLockedModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">Locked floor</div>
+    <div class="modal-body">{{ lockedModal.message }}</div>
+    <div class="modal-actions">
+      <button class="modal-btn" (click)="closeLockedModal()">OK</button>
+    </div>
+  </div>
+  </div>

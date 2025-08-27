@@ -27,6 +27,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly characterName = 'Puf-Puf';
   gameMessage = '';
   private startTimer: any | null = null;
+  // simple modal state
+  lockedModal: { visible: boolean; message: string } = { visible: false, message: '' };
 
   constructor(private readonly router: Router, private readonly game: GameStateService, private readonly i18n: LocalizationService, private readonly typer: TypewriterService, private readonly log: LoggerService) {}
 
@@ -71,14 +73,52 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   open(id: FloorId) {
     const status = this.game.snapshot.floors[id];
+    if (status === 'Locked') {
+      const req = this.getUnlockRequirement(id);
+      const msg = req
+        ? `This floor is locked. You must unlock ${req} first.`
+        : 'This floor is locked.';
+      this.showLockedModal(msg);
+      return;
+    }
     if (status === 'Available') {
       this.router.navigate(['/level', id]);
-    } else if (status === 'Resolved' && id !== 'TopFloor') {
+      return;
+    }
+    if (status === 'Resolved' && id !== 'TopFloor') {
       // Later: play animal video
-    } else if (id === 'TopFloor' && status === 'Resolved') {
+      return;
+    }
+    if (id === 'TopFloor' && status === 'Resolved') {
       // Later: play wizard video
+      return;
     }
   }
+
+  private getUnlockRequirement(id: FloorId): string | null {
+    switch (id) {
+      case 'FirstFloorLeft':
+      case 'FirstFloorRight':
+        return 'the Ground Floor';
+      case 'SecondFloorLeft':
+      case 'SecondFloorRight':
+        return 'the First Floor';
+      case 'ThirdFloorLeft':
+      case 'ThirdFloorRight':
+        return 'the Second Floor';
+      case 'TopFloor':
+        return 'all floors below';
+      case 'GroundFloor':
+      default:
+        return null;
+    }
+  }
+
+  private showLockedModal(message: string) {
+    this.lockedModal = { visible: true, message };
+  }
+
+  closeLockedModal() { this.lockedModal.visible = false; }
 
   isFirstAction(id: FloorId): boolean {
     // Blink for the first available window only (initially FirstFloorLeft)
