@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, HostListener, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GameStateService } from '../../core/services/game-state.service';
@@ -15,7 +15,7 @@ import { LoggerService } from '../../core/services/logger.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   showStartup = false;
   media!: MediaConfig;
   vars: Record<string, string> = {};
@@ -24,10 +24,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   autoplayBlocked = false;
   // character message panel
   avatarImage = 'assets/images/puf_wondering.png';
-  characterName = 'Puf-Puf';
+  readonly characterName = 'Puf-Puf';
   gameMessage = '';
+  private startTimer: any | null = null;
 
-  constructor(private router: Router, private game: GameStateService, private i18n: LocalizationService, private typer: TypewriterService, private log: LoggerService) {}
+  constructor(private readonly router: Router, private readonly game: GameStateService, private readonly i18n: LocalizationService, private readonly typer: TypewriterService, private readonly log: LoggerService) {}
 
   ngOnInit(): void {
     this.media = this.game.media;
@@ -46,7 +47,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // Attempt autoplay after view is ready
     if (this.showStartup) {
       // Delay to ensure the element is in the DOM
-      setTimeout(() => this.tryStartIntro(), 0);
+      this.startTimer = setTimeout(() => {
+        this.startTimer = null;
+        this.tryStartIntro();
+      }, 0);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.startTimer) {
+      clearTimeout(this.startTimer);
+      this.startTimer = null;
     }
   }
 
@@ -102,13 +113,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (!video) { this.log.warn('Startup video element not available yet'); return; }
     // Ensure properties satisfy autoplay policies
     video.muted = true;
-    (video as any).playsInline = true; // iOS Safari
+  video.playsInline = true; // iOS Safari
     video.autoplay = true;
     try { video.load(); } catch {}
 
     const doPlay = () => video.play();
-    const p = doPlay();
-    if (p && typeof (p as any).then === 'function') {
+  const p: Promise<void> | undefined = doPlay();
+  if (p && typeof (p as any).then === 'function') {
       p.then(() => {
         this.log.info('Startup video autoplayed');
         // Try to play the companion audio (may be blocked; best-effort)
@@ -136,12 +147,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const video = this.startupVideo?.nativeElement;
     if (video) {
       video.muted = false; // unmute if user explicitly starts
-      (video as any).playsInline = true;
+    video.playsInline = true;
       video.play().then(() => {
         this.autoplayBlocked = false;
         this.log.info('Startup video started after user gesture');
         const audio = this.startupAudio?.nativeElement;
         if (audio) {
+      audio.currentTime = 0;
           audio.play().catch(err => this.log.warn('Audio still blocked after user gesture', err));
         }
       }).catch(err => this.log.error('Failed to start video on user gesture', err));
@@ -153,16 +165,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.computeResponsiveVars();
   }
 
-  private computeResponsiveVars() {
-  this.log.debug('Compute responsive vars');
-    const layout = this.game.responsiveLayout;
+  private computeResponsiveVars(): void {
+    this.log.debug('Compute responsive vars');
+    type Bucket = 'SmallPhone' | 'MediumPhone' | 'LargePhone' | 'SmallTablet' | 'MediumTablet' | 'LargeTablet';
+    interface ResponsiveConf { HouseImageMaxHeight?: number; AnimalSize?: number; CharacterImageSize?: number; FontSizes?: { GameMessage?: number } }
+    const layout = this.game.responsiveLayout as Record<Bucket, ResponsiveConf> | null;
     const w = window.innerWidth;
     const bucket = this.pickBucket(w);
-    const conf = layout?.[bucket];
-    const houseMax = conf?.HouseImageMaxHeight ? `${conf.HouseImageMaxHeight}px` : '100%';
-    const handSize = conf?.AnimalSize ?? 80;
-    const avatarSize = conf?.CharacterImageSize ?? 72;
-    const msgFont = conf?.FontSizes?.GameMessage ?? 16;
+    const conf = layout?.[bucket] ?? {};
+    const houseMax = conf.HouseImageMaxHeight ? `${conf.HouseImageMaxHeight}px` : '100%';
+    const handSize = conf.AnimalSize ?? 80;
+    const avatarSize = conf.CharacterImageSize ?? 72;
+    const msgFont = conf.FontSizes?.GameMessage ?? 16;
     this.vars = {
       '--house-max-height': houseMax,
       '--hand-size': `${handSize}px`,
@@ -171,7 +185,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     };
   }
 
-  private pickBucket(width: number): string {
+  private pickBucket(width: number): 'SmallPhone' | 'MediumPhone' | 'LargePhone' | 'SmallTablet' | 'MediumTablet' | 'LargeTablet' {
     // Simple width-based bucketing approximating MAUI layout variants
     if (width <= 360) return 'SmallPhone';
     if (width <= 414) return 'MediumPhone';
@@ -181,7 +195,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     return 'LargeTablet';
   }
 
-  private async initMessage() {
+  private async initMessage(): Promise<void> {
     await this.i18n.init('en');
   this.log.debug('i18n loaded lang', this.i18n.currentLang);
     const end = this.game.snapshot.floors.TopFloor === 'Resolved';
