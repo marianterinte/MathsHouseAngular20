@@ -1,1 +1,18 @@
-<div class="container">Game Level placeholder</div>
+<div class="container">
+	<h2>Level: {{ floorId }}</h2>
+	<div *ngIf="!started && !finished">
+		<button (click)="start()">Start</button>
+	</div>
+
+	<div *ngIf="started && !finished">
+		<div class="question">{{ engine.currentQuestion?.questionText }}</div>
+		<input type="number" [(ngModel)]="inputValue" placeholder="Answer" />
+		<button (click)="submit()">OK</button>
+		<div class="progress">Correct: {{ correct }} / {{ total }}</div>
+	</div>
+
+	<div *ngIf="finished">
+		<h3>Level completed! ✅</h3>
+		<button (click)="backHome()">Back to Home</button>
+	</div>
+</div>
